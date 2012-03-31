@@ -1,4 +1,5 @@
 var time_limit = 600;
+var blocklist = ["http://www.reddit.com/", "http://news.ycombinator.com/", "http://twitter.com/"];
 
 
 // Listen for messages from content scripts.
@@ -31,6 +32,16 @@ chrome.extension.onRequest.addListener(
     
     	
 });
+
+// Listen for new tabs.
+chrome.tabs.onCreated.addListener(function(tab) {
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+		console.log(changeInfo.url);
+		console.log(blocklist.indexOf(changeInfo.url));
+		if (blocklist.indexOf(changeInfo.url) != -1) {
+			chrome.tabs.executeScript(null, {file: "timer_content_script.js"}); }
+		});
+	});
   
 // React when user clicks browser action icon.
 chrome.browserAction.onClicked.addListener(function(tab) {
