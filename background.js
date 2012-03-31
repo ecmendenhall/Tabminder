@@ -1,4 +1,5 @@
-var time_limit = 20;
+var time_limit = 600;
+
 
 // Listen for messages from content scripts.
 chrome.extension.onRequest.addListener(
@@ -15,8 +16,14 @@ chrome.extension.onRequest.addListener(
     	chrome.browserAction.setIcon({path:"off.png"});
     	sendResponse({recieved: true}); }
     
-    if (request.total_time > time_limit) {
-    	sendResponse({timeup: true}); }
+    if (request.total_time) {
+    	
+    	var time_left = Math.round(time_limit - request.total_time);
+    	chrome.browserAction.setBadgeText({text: time_left.toString()});
+    	
+    	if (request.total_time > time_limit) {
+    		sendResponse({timeup: true}); }
+    	}
     
     if (request.redirect) {
     	chrome.tabs.update(sender.tab.id, {url: "file:///Users/connormendenhall/Javascript/Tabminder/timeup.html"});
