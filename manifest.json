@@ -1,0 +1,13 @@
+{
+  "name": "Tabminder",
+  "version": "1.0",
+  "background": { "scripts": ["background.js"] },
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
+  ],
+  "browser_action": {
+    "default_icon": "off.png",
+    "icons": ["off.png", "on.png"]
+  },
+  "manifest_version": 2
+}
