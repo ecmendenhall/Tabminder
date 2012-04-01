@@ -1,5 +1,11 @@
-var time_limit = 600;
-var blocklist = ["http://www.reddit.com/", "http://news.ycombinator.com/", "http://twitter.com/"];
+function get_location(url) {
+    var link = document.createElement("a");
+    link.href = url;
+    return link
+}
+
+var blocklist = ['www.reddit.com', 'news.ycombinator.com', 'twitter.com'];
+var time_limits = {'www.reddit.com':240, 'news.ycombinator.com':600, 'twitter.com':400};
 
 
 // Listen for messages from content scripts.
@@ -17,8 +23,9 @@ chrome.extension.onRequest.addListener(
     	chrome.browserAction.setIcon({path:"off.png"});
     	sendResponse({recieved: true}); }
     
-    if (request.total_time) {
+    if (request.total_time && request.url) {
     	
+    	var time_limit = time_limits[request.url];
     	var time_left = Math.round(time_limit - request.total_time);
     	chrome.browserAction.setBadgeText({text: time_left.toString()});
     	
@@ -35,12 +42,24 @@ chrome.extension.onRequest.addListener(
 
 // Listen for new tabs.
 chrome.tabs.onCreated.addListener(function(tab) {
-	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
-		console.log(changeInfo.url);
-		console.log(blocklist.indexOf(changeInfo.url));
-		if (blocklist.indexOf(changeInfo.url) != -1) {
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+		
+		var parsed_url = get_location(changeInfo.url);
+		console.log(parsed_url.hostname);
+		
+		var	parsed_referrer_url = get_location(tab.url);
+		console.log(parsed_referrer_url.hostname);
+		
+		// If url is in blocklist, inject content script.
+		if (blocklist.indexOf(parsed_url.hostname) != -1) {
 			chrome.tabs.executeScript(null, {file: "timer_content_script.js"}); }
+		
+		// If referrer url is in blocklist, inject content script.
+		if (blocklist.indexOf(parsed_referrer_url.hostname) != -1) {
+			chrome.tabs.executeScript(null, {file: "timer_content_script.js"}); }
+			
 		});
+		
 	});
   
 // React when user clicks browser action icon.
