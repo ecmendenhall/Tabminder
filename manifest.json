@@ -3,7 +3,7 @@
   "version": "1.0",
   "background": { "scripts": ["background.js"] },
   "permissions": [
-    "tabs", "http://*/*", "https://*/*"
+    "tabs", "http://*/*", "https://*/* "
   ],
   "browser_action": {
     "default_icon": "off.png",
