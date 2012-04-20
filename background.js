@@ -1,6 +1,6 @@
 var redirect_url = "file:///Users/connormendenhall/Javascript/Tabminder/timeup.html";
 var blocklist = ['www.reddit.com', 'news.ycombinator.com'];
-var time_limits = {'www.reddit.com':20, 'news.ycombinator.com':30};
+var time_limits = {'www.reddit.com':90, 'news.ycombinator.com':3};
 var t_limit = 240;
 
 function get_location(url) {
@@ -39,22 +39,34 @@ chrome.extension.onRequest.addListener(
         }
         
         if (request.toggle_icon === "on") {
-            chrome.browserAction.setIcon({path:"on.png"});
+            update_icon("on");
         }
     
         if (request.toggle_icon === "off") {
-            chrome.browserAction.setIcon({path:"off.png"});
+            update_icon("off");
         }
 
         if (request.redirect) {
-            chrome.tabs.update(sender.tab.id, {url: redirect_url}); 
+            chrome.tabs.update(sender.tab.id, {url: redirect_url});
+            update_icon("off"); 
         }
 
         if (request.time_ticked && request.url) {
-            //var time_limit = time_limits[request.url];
+            var time_limit = time_limits[request.url];
+            var time_left = time_limit - request.time_ticked;
+            time_limits[request.url] = time_left;
+            console.log("New time limits: ", time_limits);
+
             t_limit = t_limit - request.time_ticked;
-            //time_limits[request.url] = time_left;
-            console.log(t_limit);
+            console.log("t_limit: ", t_limit);
+        }
+      
+        if (request.current_time && request.url) {
+            var time_limit = time_limits[request.url];
+            if (request.current_time > time_limit) {
+                chrome.tabs.update(sender.tab.id, {url: redirect_url});
+                update_icon("off");
+            }
         }
        
         if (request.get_time && request.url) {
@@ -82,13 +94,15 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 // Listen for closed tabs.
 chrome.tabs.onRemoved.addListener(function(tab) {
-    send_closed_message();
-    chrome.browserAction.setIcon({path:"off.png"});
-    
+    update_icon("off");
 }); 
+
+// Check for current tab time every 30 seconds.
+var checktime_interval_id = setInterval(check_times, 3000);
     
-function send_closed_message () {
-    chrome.tabs.getSelected(null, function(tab) {
+function send_closed_message (close_tab) {
+    console.log(close_tab);
+    chrome.tabs.get(close_tab, function(tab) {
         console.log("sending tab_closed to tab " + tab.id);
         chrome.tabs.sendRequest(tab.id, {close: true}, 
                                         function(response) {
@@ -96,3 +110,13 @@ function send_closed_message () {
     });
 }    
 
+function check_times () {
+    chrome.tabs.getSelected(null, function(tab) {
+        console.log("Sending request for time to tab ", tab.id);
+        chrome.tabs.sendRequest(tab.id, {send_time: true} );
+    });
+}
+
+function update_icon(icon_status) {
+    chrome.browserAction.setIcon({path: icon_status + ".png"});
+}

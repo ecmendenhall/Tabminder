@@ -12,7 +12,6 @@ Timer.prototype.tick = function () {
         this.time_ticked = (now - this.start_time) / 1000;
         console.log(this.time_ticked);
         thisObj = this;
-        console.log("setting up an interval!");
         var tick_timeout = setTimeout(function() { thisObj.tick(); }, 1000);
         this.tick_timeout = tick_timeout;
         //this.tick_timeouts.push(tick_timeout_id);
@@ -98,17 +97,24 @@ function main () {
         console.log("blur"); 
         } );
 
-    // Listen for tab close
+   
     chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
         console.log(sender.tab ? 
                     "from a content script:" + sender.tab.url:
                     "from the extension");
         
+        // Listen for tab close
         if (request.close === true) {
            sendResponse({timer_stop: "stopped"});
            timer.stop();
         }
+
+        // Listen for time requests
+        if (request.send_time === true) {
+           chrome.extension.sendRequest({current_time: timer.time_ticked, url: location.hostname});
+        }
+
     });
 }
 
