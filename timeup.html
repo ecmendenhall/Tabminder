@@ -1,9 +1,36 @@
+<! DOCTYPE html>
 <html>
+<head>
+<link rel="stylesheet" href="bootstrap.css" type="text/css">
+<style>
+.hero-unit {
+  background-color: #ffffff;
+  text-align: center;
+}
+.icon {
+  vertical-align: middle;
+}
+.xlarge {
+  font-size: 20px;
+}
+</style>
+</head>
 <body>
-<div id="overlay">
-     <div>
-          <p>This is my modal. There are many like it, but this one is mine.</p>
-     </div>
-</div>
+    <div class="container">
+        <div class="row-responsive">
+            <div class="hero-unit">
+                <h1>Time's up!</h1>
+                    <p>You've been browsing a timesink site for too long.</p>
+                    <p>
+                        <a class="btn btn-inverse btn-large xlarge"><img src="remove.png">
+                            <span class="icon"> Close tabs</span>
+                        </a>
+                        <a class="btn btn-danger btn-large xlarge"><img src="repeat.png">
+                            <span class="icon"> Restart timer</span>
+                        </a>
+                    </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
