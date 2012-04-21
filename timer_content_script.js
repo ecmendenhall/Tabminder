@@ -39,7 +39,7 @@ Timer.prototype.stop = function () {
     this.ticking = false;
     console.log("stop()");
     this.toggle_icon("off");
-    this.send_time();
+    //this.send_time();
     console.log("clearing timeout id: ", this.tick_timeout);
     clearTimeout(this.tick_timeout);
     this.reset();
@@ -56,6 +56,7 @@ Timer.prototype.reset = function () {
 };
 
 Timer.prototype.send_time = function () {
+    console.log("send_time()");
     chrome.extension.sendRequest({time_ticked: this.time_ticked,
                                   url: location.hostname});
 };
@@ -113,7 +114,7 @@ function main () {
 
         // Listen for time requests
         if (request.send_time === true) {
-           chrome.extension.sendRequest({current_time: timer.time_ticked, url: location.hostname});
+           sendResponse({current_time: timer.time_ticked, url: location.hostname});
         }
 
     });

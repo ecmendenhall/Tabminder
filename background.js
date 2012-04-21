@@ -1,6 +1,7 @@
 var redirect_url = "file:///Users/connormendenhall/Javascript/Tabminder/timeup.html";
 var blocklist = ['www.reddit.com', 'news.ycombinator.com'];
 var time_limits = {'www.reddit.com':600, 'news.ycombinator.com':600};
+var elapsed_times = {'www.reddit.com':0, 'news.ycombinator.com':0};
 var t_limit = 240;
 
 function get_location(url) {
@@ -17,6 +18,9 @@ chrome.extension.onRequest.addListener(
                     "from the extension");
 
         if (request.loaded === false) {
+                       
+            update_icon("off");
+
             var parsed_url = get_location(sender.tab.url);
             console.log(parsed_url.hostname);
             
@@ -52,23 +56,26 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.time_ticked && request.url) {
-            var time_limit = time_limits[request.url];
-            var time_left = time_limit - request.time_ticked;
-            time_limits[request.url] = time_left;
-            console.log("New time limits: ", time_limits);
+            //var time_limit = time_limits[request.url];
+            //var time_left = time_limit - request.time_ticked;
+            //time_limits[request.url] = time_left;
+            //console.log("New time limits: ", time_limits);
 
-            t_limit = t_limit - request.time_ticked;
-            console.log("t_limit: ", t_limit);
+            //t_limit = t_limit - request.time_ticked;
+            //console.log("t_limit: ", t_limit);
         }
       
         if (request.current_time && request.url) {
             var time_limit = time_limits[request.url];
-            var time_left = time_limit - request.current_time;
+            var time_elapsed = elapsed_times[request.url];
+            //var time_left = time_limit - time_elapsed - request.current_time;
+            elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
+            console.log(elapsed_times[request.url], time_limits[request.url]);
 
-            var badge_string = Math.round(time_left).toString()
+            var badge_string = Math.round(time_limit - time_elapsed).toString()
             chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
 
-            if (request.current_time > time_limit) {
+            if (time_elapsed > time_limit) {
                 chrome.tabs.update(sender.tab.id, {url: redirect_url});
                 update_icon("off");
             }
@@ -91,6 +98,7 @@ chrome.tabs.onCreated.addListener(function(tab) {
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         
         if(changeInfo.status == "complete") {
+            //check_times();
             console.log("checking if timer loaded");
             chrome.tabs.executeScript(tabId, {file: "check_timer.js"});
         }
@@ -102,8 +110,18 @@ chrome.tabs.onRemoved.addListener(function(tab) {
     update_icon("off");
 }); 
 
-// Check for current tab time every 30 seconds.
-var checktime_interval_id = setInterval(check_times, 1000);
+var check_interval = 2000;
+var check_interval_set = false;
+set_check_interval();
+
+function set_check_interval () {
+    // Check for current tab time every 30 seconds.
+    console.log("set_check_interval()");
+    if (check_interval_set === false) {
+        check_interval_set = true;
+        var checktime_interval_id = setInterval(check_times, check_interval);
+    }
+}
     
 function send_closed_message (close_tab) {
     console.log(close_tab);
@@ -116,12 +134,37 @@ function send_closed_message (close_tab) {
 }    
 
 function check_times () {
+    console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
         console.log("Sending request for time to tab ", tab.id);
-        chrome.tabs.sendRequest(tab.id, {send_time: true} );
+        chrome.tabs.sendRequest(tab.id, {send_time: true}, function(response) {
+            update_times(response, tab); } );
     });
 }
 
 function update_icon(icon_status) {
+    console.log("update_icon()");
     chrome.browserAction.setIcon({path: icon_status + ".png"});
+    if (icon_status === "off") {
+        chrome.browserAction.setBadgeText({text: ""}); }
+}
+
+function update_times (response, tab) {
+    if (response.current_time && response.url) {
+            var time_limit = time_limits[response.url];
+            var time_elapsed = elapsed_times[response.url];
+            //var time_left = time_limit - time_elapsed - request.current_time;
+            elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
+            console.log(elapsed_times[response.url], time_limits[response.url]);
+
+            var badge_string = Math.round(time_limit - time_elapsed).toString()
+            chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
+
+            if (time_elapsed > time_limit) {
+                chrome.tabs.update(tab.id, {url: redirect_url});
+                update_icon("off");
+            }
+        }
+
+
 }
