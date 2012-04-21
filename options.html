@@ -19,7 +19,7 @@
 </style>
 <script src="options.js" type="text/javascript"></script>
 </head>
-<body onload="load_settings()">
+<body>
 
 <div class="container">
     <div class="row">
@@ -33,67 +33,18 @@
                         <th class="span1"></th>
                     </tr>
                 </thead>
-                <tbody id="url-table">
+                <tbody id="url-table">                                        
                     <tr>
                         <td>
-                        <p>
-                        www.reddit.com
-                        </p>
+                        <input id="url-field" type="text" placeholder="New URL" class="span4"></input>
                         </td>
                         <td>
-                        <p>
-                        10
-                        </p>
+                        <input id="time-field" type="text" placeholder="Time "class="span1"></input>
                         </td>
                         <td>
-                        <button class="btn-danger"><strong>x</strong></button>
+                        <button class="btn-success" id="new-url"><strong>+</strong></button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                        <p>
-                        news.ycombinator.com
-                        </p>
-                        </td>
-                        <td>
-                        <p>
-                        15
-                        </p>
-                        </td>
-                        <td>
-                        <button class="btn-danger"><strong>x</strong></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <p>
-                        twitter.com
-                        </p>
-                        </td>
-                        <td>
-                        <p>
-                        20
-                        </p>
-                        </td>
-                        <td>
-                        <button class="btn-danger"><strong>x</strong></button>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                    <form>
-                        <td>
-                        <input type="text" placeholder="New URL" class="span4"></input>
-                        </td>
-                        <td>
-                        <input type="text" placeholder="Time "class="span1"></input>
-                        </td>
-                        <td>
-                        <button class="btn-success"><strong>+</strong></button>
-                        </td>
-                    </form>
-                    </tr>
-                   
                 </tbody>
             </table>
             </div>
