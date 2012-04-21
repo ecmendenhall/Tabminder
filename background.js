@@ -8,6 +8,8 @@ function Settings () {
     this.blocklist = [];
     this.time_limits = {};
     this.elapsed_times = {};
+    this.timerbutton_elapsed_times = {};
+    this.default_time_limit = 10;
     this.redirect_url = "timeup.html";
     this.restore_url = "";
     
@@ -100,11 +102,21 @@ chrome.extension.onRequest.addListener(
         }
       
         if (request.current_time && request.url) {
-            var time_limit = settings.time_limits[request.url];
-            var time_elapsed = settings.elapsed_times[request.url];
-            //var time_left = time_limit - time_elapsed - request.current_time;
-            settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-            console.log(settings.elapsed_times[request.url], settings.time_limits[request.url]);
+            var parsed_url = get_location(request.url);
+
+            if (settings.blocklist.indexOf(parsed_url.hostname) != -1) {
+                var time_limit = settings.time_limits[request.url];
+                var time_elapsed = settings.elapsed_times[request.url];
+                settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
+                console.log(settings.elapsed_times[request.url], settings.time_limits[request.url]);
+            }
+
+            else {
+                var time_limit = settings.default_time_limit
+                var time_elapsed = settings.timerbutton_elapsed_times[request.url];
+                settings.timerbutton_elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
+                console.log("changing times from a timerbutton");
+            }
 
             var badge_string = Math.round(time_limit - time_elapsed).toString()
             chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
@@ -121,7 +133,7 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.close_tabs === true) {
-            
+            chrome.tabs.remove(sender.tab.id);
         }
 
         if (request.restart_timer === true) {
@@ -133,14 +145,28 @@ chrome.extension.onRequest.addListener(
 
         
         }
+
+        if (request.load_settings === true) {
+            var options_url = chrome.extension.getURL('options.html')
+            chrome.tabs.create({url: options_url });
+        }
+
+        if (request.start_timer === true) {
+            console.log("Timer started!");
+            
+            chrome.windows.getCurrent(function(win) {
+                chrome.tabs.getSelected(win.id, function (response){
+                    var active_hostname = get_location(response.url).hostname;
+                    console.log('HOSTNAME: ', active_hostname);
+                    settings.timerbutton_elapsed_times[active_hostname] = 0;
+                });
+            });
+            
+            chrome.tabs.executeScript(null, {file: "timer_content_script.js"});
+        }
+
 });
 
-// React when user clicks browser action icon.
-chrome.browserAction.onClicked.addListener(function(tab) {
-	// Start timer in current tab
-    //console.log("Timer started!");
-    //chrome.tabs.executeScript(null, {file: "timer_content_script.js"});
-});
 
 // Listen for new tabs.
 chrome.tabs.onCreated.addListener(function(tab) {
@@ -200,11 +226,22 @@ function update_icon(icon_status) {
 
 function update_times (response, tab) {
     if (response.current_time && response.url) {
-            var time_limit = settings.time_limits[response.url];
-            var time_elapsed = settings.elapsed_times[response.url];
-            //var time_left = time_limit - time_elapsed - request.current_time;
-            settings.elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
-            console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
+            
+            var parsed_url = get_location(response.url);
+            
+            if (settings.blocklist.indexOf(parsed_url.hostname) != -1) {
+                var time_limit = settings.time_limits[response.url];
+                var time_elapsed = settings.elapsed_times[response.url];
+                settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
+                console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
+            }
+
+            else {
+                var time_limit = settings.default_time_limit
+                var time_elapsed = settings.timerbutton_elapsed_times[response.url];
+                settings.timerbutton_elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
+                console.log("changing times from a timerbutton");
+            }
 
             var badge_string = Math.round(time_limit - time_elapsed).toString()
             chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
@@ -214,7 +251,5 @@ function update_times (response, tab) {
                 chrome.tabs.update(tab.id, {url: settings.redirect_url});
                 update_icon("off");
             }
-        }
-
-
+    }
 }
