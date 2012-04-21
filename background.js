@@ -9,6 +9,7 @@ function Settings () {
     this.time_limits = {};
     this.elapsed_times = {};
     this.redirect_url = "timeup.html";
+    this.restore_url = "";
     
 }
 
@@ -83,6 +84,7 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.redirect) {
+            settings.restore_url = sender.tab.url;
             chrome.tabs.update(sender.tab.id, {url: settings.redirect_url});
             update_icon("off"); 
         }
@@ -108,6 +110,7 @@ chrome.extension.onRequest.addListener(
             chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
 
             if (time_elapsed > time_limit) {
+                settings.restore_url = sender.tab.url;
                 chrome.tabs.update(sender.tab.id, {url: settings.redirect_url});
                 update_icon("off");
             }
@@ -115,6 +118,20 @@ chrome.extension.onRequest.addListener(
        
         if (request.get_time && request.url) {
             sendResponse({time_limit: t_limit}); 
+        }
+
+        if (request.close_tabs === true) {
+            
+        }
+
+        if (request.restart_timer === true) {
+            console.log(settings.restore_url);
+            var reset_hostname = get_location(settings.restore_url).hostname;
+            console.log(reset_hostname);
+            settings.elapsed_times[reset_hostname] = 0;
+            chrome.tabs.update(sender.tab.id, {url: settings.restore_url});
+
+        
         }
 });
 
@@ -193,6 +210,7 @@ function update_times (response, tab) {
             chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
 
             if (time_elapsed > time_limit) {
+                settings.restore_url = tab.url;
                 chrome.tabs.update(tab.id, {url: settings.redirect_url});
                 update_icon("off");
             }
