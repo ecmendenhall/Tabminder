@@ -10,7 +10,7 @@ Timer.prototype.tick = function () {
     if (this.ticking === true) {
         var now = new Date().getTime();
         this.time_ticked = (now - this.start_time) / 1000;
-        console.log(this.time_ticked);
+        console.log("time_ticked: ", this.time_ticked);
         thisObj = this;
         var tick_timeout = setTimeout(function() { thisObj.tick(); }, 1000);
         this.tick_timeout = tick_timeout;
@@ -42,6 +42,7 @@ Timer.prototype.stop = function () {
     this.send_time();
     console.log("clearing timeout id: ", this.tick_timeout);
     clearTimeout(this.tick_timeout);
+    this.reset();
     //for (var i = 0; i < this.tick_timeouts.length; i++) {
     //    var tick_timeout_id = this.tick_timeouts.pop(i);
     //    console.log("clearing timeout for id: ", tick_timeout_id);

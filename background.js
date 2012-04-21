@@ -1,6 +1,6 @@
 var redirect_url = "file:///Users/connormendenhall/Javascript/Tabminder/timeup.html";
 var blocklist = ['www.reddit.com', 'news.ycombinator.com'];
-var time_limits = {'www.reddit.com':90, 'news.ycombinator.com':3};
+var time_limits = {'www.reddit.com':600, 'news.ycombinator.com':600};
 var t_limit = 240;
 
 function get_location(url) {
@@ -63,6 +63,11 @@ chrome.extension.onRequest.addListener(
       
         if (request.current_time && request.url) {
             var time_limit = time_limits[request.url];
+            var time_left = time_limit - request.current_time;
+
+            var badge_string = Math.round(time_left).toString()
+            chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
+
             if (request.current_time > time_limit) {
                 chrome.tabs.update(sender.tab.id, {url: redirect_url});
                 update_icon("off");
@@ -77,8 +82,8 @@ chrome.extension.onRequest.addListener(
 // React when user clicks browser action icon.
 chrome.browserAction.onClicked.addListener(function(tab) {
 	// Start timer in current tab
-    console.log("Timer started!");
-    chrome.tabs.executeScript(null, {file: "timer_content_script.js"});
+    //console.log("Timer started!");
+    //chrome.tabs.executeScript(null, {file: "timer_content_script.js"});
 });
 
 // Listen for new tabs.
@@ -98,7 +103,7 @@ chrome.tabs.onRemoved.addListener(function(tab) {
 }); 
 
 // Check for current tab time every 30 seconds.
-var checktime_interval_id = setInterval(check_times, 3000);
+var checktime_interval_id = setInterval(check_times, 1000);
     
 function send_closed_message (close_tab) {
     console.log(close_tab);
