@@ -6,17 +6,17 @@ function Timer() {
 }
 
 Timer.prototype.tick = function () {
-    console.log("tick()");
+    //console.log("tick()");
     if (this.ticking === true) {
         var now = new Date().getTime();
         this.time_ticked = (now - this.start_time) / 1000;
-        console.log("time_ticked: ", this.time_ticked);
+        //console.log("time_ticked: ", this.time_ticked);
         thisObj = this;
         var tick_timeout = setTimeout(function() { thisObj.tick(); }, 1000);
         this.tick_timeout = tick_timeout;
         //this.tick_timeouts.push(tick_timeout_id);
         //console.log("timeout ids :", this.tick_timeouts.length);
-        console.log("timeout id: ", tick_timeout);
+        //console.log("timeout id: ", tick_timeout);
     }
     if (this.time_ticked > this.time_limit) {
         this.send_redirect_alarm();
@@ -25,7 +25,7 @@ Timer.prototype.tick = function () {
 
 Timer.prototype.start = function () {
     if (this.ticking === false) {
-        console.log("start()");
+        //console.log("start()");
         this.toggle_icon("on");
         this.get_time_limit();
         this.start_time = new Date().getTime();
@@ -37,10 +37,10 @@ Timer.prototype.start = function () {
 
 Timer.prototype.stop = function () {
     this.ticking = false;
-    console.log("stop()");
+    //console.log("stop()");
     this.toggle_icon("off");
     //this.send_time();
-    console.log("clearing timeout id: ", this.tick_timeout);
+    //console.log("clearing timeout id: ", this.tick_timeout);
     clearTimeout(this.tick_timeout);
     this.reset();
     //for (var i = 0; i < this.tick_timeouts.length; i++) {
@@ -51,12 +51,12 @@ Timer.prototype.stop = function () {
 };
 
 Timer.prototype.reset = function () {
-    console.log("reset()");
+    //console.log("reset()");
     this.time_ticked = 0;
 };
 
 Timer.prototype.send_time = function () {
-    console.log("send_time()");
+    //console.log("send_time()");
     chrome.extension.sendRequest({time_ticked: this.time_ticked,
                                   url: location.hostname});
 };
@@ -83,28 +83,28 @@ Timer.prototype.send_redirect_alarm = function () {
 
 
 function main () {
-    console.log("main()");
+    //console.log("main()");
     timer = new Timer();
     timer.start();
 
     // Listen for window focus
     window.addEventListener('focus', function () { 
         timer.start();
-        console.log("focus");
+        //console.log("focus");
         } );
 
     // Listen for window blur
     window.addEventListener('blur', function () { 
         timer.stop();
-        console.log("blur"); 
+        //console.log("blur"); 
         } );
 
    
     chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
-        console.log(sender.tab ? 
+        /* console.log(sender.tab ? 
                     "from a content script:" + sender.tab.url:
-                    "from the extension");
+                    "from the extension"); */
         
         // Listen for tab close
         if (request.close === true) {

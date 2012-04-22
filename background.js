@@ -21,8 +21,9 @@ Settings.prototype.load_settings = function () {
         var setting = JSON.parse(stringified_settings);
         return setting;
         }
-
-
+    
+    //console.log("load_settings()");
+    
     this.time_limits = get_JSON_settings('timesink_urls');
     for (url in this.time_limits) {
         this.blocklist.push(url);
@@ -31,10 +32,14 @@ Settings.prototype.load_settings = function () {
     }
     
     var extra_settings = get_JSON_settings('extra_settings');
-    if (extra_settings.length > 0) {
+    if ('show_badge' in extra_settings && 'default_time' in extra_settings) {
         this.default_time_limit = extra_settings['default_time'] * 60;
         this.show_badge = extra_settings['show_badge'];
     }
+
+    //console.log(this.show_badge);
+    //console.log(this.default_time_limit);
+
 
     this.loaded = true;
 
@@ -59,16 +64,16 @@ settings.load_settings();
 // Listen for messages from content scripts.
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
-        console.log(sender.tab ? 
+        /* console.log(sender.tab ? 
                     "from a content script:" + sender.tab.url:
-                    "from the extension");
+                    "from the extension"); */
 
         if (request.loaded === false) {
                        
             update_icon("off");
 
             var parsed_url = get_location(sender.tab.url);
-            console.log(parsed_url.hostname);
+            //console.log(parsed_url.hostname);
             
             //var parsed_referrer_url = get_location(tab.url);
             //console.log(parsed_referrer_url.hostname);
@@ -110,14 +115,14 @@ chrome.extension.onRequest.addListener(
                 var time_limit = settings.time_limits[request.url];
                 var time_elapsed = settings.elapsed_times[request.url];
                 settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-                console.log(settings.elapsed_times[request.url], settings.time_limits[request.url]);
+                //console.log(settings.elapsed_times[request.url], settings.time_limits[request.url]);
             }
 
             else {
                 var time_limit = settings.default_time_limit
                 var time_elapsed = settings.timerbutton_elapsed_times[request.url];
                 settings.timerbutton_elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-                console.log("changing times from a timerbutton");
+                //console.log("changing times from a timerbutton");
             }
             
             var badge_string = '';
@@ -147,9 +152,9 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.restart_timer === true) {
-            console.log(settings.restore_url);
+            //console.log(settings.restore_url);
             var reset_hostname = get_location(settings.restore_url).hostname;
-            console.log(reset_hostname);
+            //console.log(reset_hostname);
             settings.elapsed_times[reset_hostname] = 0;
             chrome.tabs.update(sender.tab.id, {url: settings.restore_url});
         }
@@ -161,7 +166,7 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.add_page === true) {
-            console.log("Adding page to timesinks!");
+            //console.log("Adding page to timesinks!");
             chrome.windows.getCurrent(function(win) {
                 chrome.tabs.getSelected(win.id, function (response){
                     var active_hostname = get_location(response.url).hostname;
@@ -174,12 +179,12 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.start_timer === true) {
-            console.log("Timer started!");
+            //console.log("Timer started!");
             
             chrome.windows.getCurrent(function(win) {
                 chrome.tabs.getSelected(win.id, function (response){
                     var active_hostname = get_location(response.url).hostname;
-                    console.log('HOSTNAME: ', active_hostname);
+                    //console.log('HOSTNAME: ', active_hostname);
                     settings.timerbutton_elapsed_times[active_hostname] = 0;
                 });
             });
@@ -200,8 +205,11 @@ chrome.tabs.onCreated.addListener(function(tab) {
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         
         if(changeInfo.status == "complete") {
-            console.log("checking if timer loaded");
-            chrome.tabs.executeScript(tabId, {file: "check_timer.js"});
+            if(tab.url.indexOf('chrome://') === -1 && 
+               tab.url.indexOf('chrome-extension://') === -1 &&
+               tab.url.indexOf('chrome-devtools://') === -1) {
+                //console.log("checking if timer loaded");
+                chrome.tabs.executeScript(tabId, {file: "check_timer.js"}); }
         }
     });
 });
@@ -217,7 +225,7 @@ set_check_interval();
 
 function set_check_interval () {
     // Check for current tab time every check_interval milliseconds.
-    console.log("set_check_interval()");
+    //console.log("set_check_interval()");
     if (check_interval_set === false) {
         check_interval_set = true;
         var checktime_interval_id = setInterval(check_times, check_interval);
@@ -225,26 +233,24 @@ function set_check_interval () {
 }
     
 function send_closed_message (close_tab) {
-    console.log(close_tab);
+    //console.log(close_tab);
     chrome.tabs.get(close_tab, function(tab) {
-        console.log("sending tab_closed to tab " + tab.id);
-        chrome.tabs.sendRequest(tab.id, {close: true}, 
-                                        function(response) {
-            console.log(response.timer_stop); }); 
+        //console.log("sending tab_closed to tab " + tab.id);
+        chrome.tabs.sendRequest(tab.id, {close: true}); 
     });
 }    
 
 function check_times () {
-    console.log("check_times()");
+    //console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
-        console.log("Sending request for time to tab ", tab.id);
+        //console.log("Sending request for time to tab ", tab.id);
         chrome.tabs.sendRequest(tab.id, {send_time: true}, function(response) {
             update_times(response, tab); } );
     });
 }
 
 function update_icon(icon_status) {
-    console.log("update_icon()");
+    //console.log("update_icon()");
     chrome.browserAction.setIcon({path: "img/" + icon_status + ".png"});
     if (icon_status === "off") {
         chrome.browserAction.setBadgeText({text: ""}); }
@@ -254,20 +260,20 @@ function update_times (response, tab) {
     if (response.current_time && response.url) {
             
             var parsed_url = get_location(response.url);
-            console.log(parsed_url.hostname);
+            //console.log(parsed_url.hostname);
             
             if (settings.blocklist.indexOf(response.url) != -1) {
                 var time_limit = settings.time_limits[response.url];
                 var time_elapsed = settings.elapsed_times[response.url];
                 settings.elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
-                console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
+                //console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
             }
 
             else {
                 var time_limit = settings.default_time_limit
                 var time_elapsed = settings.timerbutton_elapsed_times[response.url];
                 settings.timerbutton_elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
-                console.log("changing times from a timerbutton");
+                //console.log("changing times from a timerbutton");
             }
             
             var badge_string = '';
