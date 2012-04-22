@@ -195,5 +195,5 @@ function save_extra_settings () {
     document.extra_settings['show_badge'] = show_badge;
     console.log(document.extra_settings);
     save_settings('extra_settings', document.extra_settings);
-   
+    chrome.extension.sendRequest({update_settings: true});
 }
