@@ -17,6 +17,8 @@ Settings.prototype.load_settings = function () {
         if (localStorage.getItem(name) === "undefined") {
             return {};
         }
+        if (name in localStorage === false)
+            return {};
         var stringified_settings = localStorage[name];
         var setting = JSON.parse(stringified_settings);
         return setting;
@@ -27,7 +29,7 @@ Settings.prototype.load_settings = function () {
     this.time_limits = get_JSON_settings('timesink_urls');
     for (url in this.time_limits) {
         this.blocklist.push(url);
-        if (this.loaded === false)
+        if (this.loaded === false || url in this.elapsed_times === false)
             this.elapsed_times[url] = 0;
     }
     
@@ -128,6 +130,7 @@ chrome.extension.onRequest.addListener(
             var badge_string = '';
             if (settings.show_badge === true) {
                 var badge_string = Math.round((time_limit - time_elapsed)/60).toString();
+                console.log(badge_string, time_limit, time_elapsed);
             }
 
             chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
@@ -170,9 +173,10 @@ chrome.extension.onRequest.addListener(
             chrome.windows.getCurrent(function(win) {
                 chrome.tabs.getSelected(win.id, function (response){
                     var active_hostname = get_location(response.url).hostname;
-                    settings.time_limits[active_hostname] = settings.default_time_limit / 60;
+                    settings.time_limits[active_hostname] = settings.default_time_limit;
                     settings.save_settings('timesink_urls', settings.time_limits);
                     settings.load_settings();
+                    chrome.tabs.reload(response.id);
                 });
             });
 
@@ -279,6 +283,7 @@ function update_times (response, tab) {
             var badge_string = '';
             if (settings.show_badge === true) {
                 var badge_string = Math.round((time_limit - time_elapsed)/60).toString();
+                console.log(badge_string, time_limit, time_elapsed);
             }
 
             chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
