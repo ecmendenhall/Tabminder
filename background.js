@@ -117,8 +117,9 @@ chrome.extension.onRequest.addListener(
                 settings.timerbutton_elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
                 console.log("changing times from a timerbutton");
             }
-
-            var badge_string = Math.round(time_limit - time_elapsed).toString()
+            
+            chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
+            var badge_string = Math.round((time_limit - time_elapsed)/60).toString()
             chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
 
             if (time_elapsed > time_limit) {
@@ -228,11 +229,12 @@ function update_times (response, tab) {
     if (response.current_time && response.url) {
             
             var parsed_url = get_location(response.url);
+            console.log(parsed_url.hostname);
             
-            if (settings.blocklist.indexOf(parsed_url.hostname) != -1) {
+            if (settings.blocklist.indexOf(response.url) != -1) {
                 var time_limit = settings.time_limits[response.url];
                 var time_elapsed = settings.elapsed_times[response.url];
-                settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
+                settings.elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
                 console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
             }
 
@@ -242,8 +244,9 @@ function update_times (response, tab) {
                 settings.timerbutton_elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
                 console.log("changing times from a timerbutton");
             }
-
-            var badge_string = Math.round(time_limit - time_elapsed).toString()
+            
+            chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
+            var badge_string = Math.round((time_limit - time_elapsed)/60).toString()
             chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
 
             if (time_elapsed > time_limit) {

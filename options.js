@@ -15,26 +15,35 @@ function save_new_url () {
     console.log(new_secs);
 
     if (new_secs !== isNaN(new_secs) && new_url !== '') {
-        document.timesink_urls[new_url] = new_secs;
-        console.log(document.timesink_urls);
-            
-        var url_table = document.getElementById("url-table");
-        var new_row = url_table.insertRow(0);
-        new_row.setAttribute('id', new_url);
-        var url_cell = new_row.insertCell(0);
-        var time_cell = new_row.insertCell(1);
-        var del_cell = new_row.insertCell(2);
-        var url_text = document.createTextNode(new_url);
-        url_cell.appendChild(url_text);
-        var time_text = document.createTextNode(new_time);
-        time_cell.appendChild(time_text);
-        del_cell.innerHTML = '<button class="btn-danger"><strong>x</strong></button>';
-        var del_button = del_cell.firstChild;
-        del_button.addEventListener('click', function() {delete_url(this)});
-        //var onclick_string = 'delete_url("' + new_url + '")';
-        //del_button.setAttribute('onclick', onclick_string);
+        if (new_url in document.timesink_urls === false) {
+            document.timesink_urls[new_url] = new_secs;
+            console.log(document.timesink_urls);
+                
+            var url_table = document.getElementById("url-table");
+            var new_row = url_table.insertRow(0);
+            new_row.setAttribute('id', new_url);
+            var url_cell = new_row.insertCell(0);
+            var time_cell = new_row.insertCell(1);
+            var del_cell = new_row.insertCell(2);
+            var url_text = document.createTextNode(new_url);
+            url_cell.appendChild(url_text);
+            var time_text = document.createTextNode(new_time);
+            time_cell.appendChild(time_text);
+           
+            del_cell.innerHTML = '<button class="btn" id="edit">Edit</button> <button class="btn-danger" id="delete"><strong>x</strong></button>';
+        
+            var edit_button = del_cell.firstChild;
+            var editlistener = function() {edit_url(this)};
+            edit_button.editlistener = editlistener;
+            document.getElementById('edit').addEventListener('click', editlistener);        
+        
+       
+            var del_button = edit_button.nextElementSibling;
+            del_button.addEventListener('click', function() {delete_url(this)});
 
-        save_settings('timesink_urls', document.timesink_urls);
+            save_settings('timesink_urls', document.timesink_urls);
+            console.log(document.timesink_urls);
+        }
     }
 
 }
@@ -47,6 +56,76 @@ function delete_url (element) {
     url_row.parentNode.removeChild(url_row);  
     delete document.timesink_urls[url];
     save_settings('timesink_urls', document.timesink_urls);
+    console.log(document.timesink_urls);
+}
+
+function edit_url (element) {
+    console.log("edit_url()");
+    element.removeEventListener('click', element.editlistener, false);
+    element.innerText = 'Save';
+    element.setAttribute('id', 'save');
+    element.addEventListener('click', function() {save_changed_url(this)});
+    var url = element.parentNode.parentNode.id;
+    var url_row = document.getElementById(url);
+    var url_cell = url_row.firstChild;
+    var time_cell = url_cell.nextSibling;
+    var del_cell = time_cell.nextSibling;
+    
+    var placeholder = url_cell.innerText;
+    url_cell.innerHTML = '<input id="edit-url-field" type="text" class="span4"></input>';
+    url_cell.firstChild.value = placeholder;
+    
+    placeholder = time_cell.innerText;
+    time_cell.innerHTML = '<input id="edit-time-field" type="text" class="span1"></input>';
+    time_cell.firstChild.value = placeholder;
+
+   
+}
+
+function save_changed_url (element) {
+    console.log("save_changed_url()");    
+    var url_row = element.parentNode.parentNode;
+    var url_cell = url_row.firstChild;
+    var time_cell = url_cell.nextSibling;
+    var del_cell = time_cell.nextSibling;
+
+    var url_field = url_cell.firstChild;
+    var new_url = url_field.value;
+    
+    
+    var time_field = time_cell.firstChild;
+    var new_time = time_field.value;
+    var new_secs = new_time * 60;
+    console.log(time_field.value);
+
+    if (new_secs !== isNaN(new_secs) && new_url !== '') {
+    
+        var old_url = url_row.id;
+        delete document.timesink_urls[old_url];
+        document.timesink_urls[new_url] = new_secs;
+        
+        url_row.id = new_url;
+
+        url_field.parentNode.removeChild(url_field);
+        url_cell.innerHTML = new_url;
+        
+        time_field.parentNode.removeChild(time_field);
+        time_cell.innerHTML = new_time;
+
+        del_cell.innerHTML = '<button class="btn" id="edit">Edit</button> <button class="btn-danger" id="delete"><strong>x</strong></button>';
+        
+        var edit_button = del_cell.firstChild;
+        var editlistener = function() {edit_url(this)};
+        edit_button.editlistener = editlistener;
+        edit_button.addEventListener('click', editlistener);        
+        
+       
+        var del_button = edit_button.nextElementSibling;
+        del_button.addEventListener('click', function() {delete_url(this)});
+
+        save_settings('timesink_urls', document.timesink_urls);
+        console.log(document.timesink_urls);
+    }
 }
 
 function save_settings (name, setting) {
@@ -77,9 +156,18 @@ function restore_settings () {
         var time_mins = Math.round(document.timesink_urls[url] / 60);
         var time_text = document.createTextNode(time_mins.toString());
         time_cell.appendChild(time_text);
-        del_cell.innerHTML = '<button class="btn-danger"><strong>x</strong></button>';
-        var del_button = del_cell.firstChild;
+        
+        del_cell.innerHTML = '<button class="btn" id="edit">Edit</button> <button class="btn-danger" id="delete"><strong>x</strong></button>';
+        
+        var edit_button = del_cell.firstChild;
+        var editlistener = function() {edit_url(this)};
+        edit_button.editlistener = editlistener;
+        document.getElementById('edit').addEventListener('click', editlistener);        
+        
+       
+        var del_button = edit_button.nextElementSibling;
         del_button.addEventListener('click', function() {delete_url(this)});
+        
         //var onclick_string = 'delete_url("' + url + '")';
         //del_button.setAttribute('onclick', onclick_string);
         
