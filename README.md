@@ -13,7 +13,7 @@ Tabminder is my first Chrome extension, so there will be bugs. If you're lucky e
 [report it](https://github.com/ecmendenhall/Tabminder/issues) and I'll try to fix it. 
 
 To download the current version of Tabminder, visit the project repository [on GitHub](https://github.com/ecmendenhall/Tabminder). 
-For more information on how to configure the extension, please see its [project page](). 
+For more information on how to configure the extension, please see its [project page](http://ecmendenhall.github.com/Tabminder/). 
 
 ##License
 This code is released under an MIT license. For all the details, see the included file 'LICENSE.md'.
