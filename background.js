@@ -8,7 +8,6 @@ function Settings () {
     this.restore_url = "";
     this.show_badge = true;
     this.loaded = false;
-    
 }
 
 Settings.prototype.load_settings = function () {
@@ -42,17 +41,13 @@ Settings.prototype.load_settings = function () {
     //console.log(this.show_badge);
     //console.log(this.default_time_limit);
 
-
     this.loaded = true;
-
 }
 
 Settings.prototype.save_settings = function (name, setting) {
         var stringified_settings = JSON.stringify(setting);
         localStorage.setItem(name, stringified_settings);
 }
-
-
 
 function get_location(url) {
     var link = document.createElement("a");
@@ -63,7 +58,7 @@ function get_location(url) {
 settings = new Settings();
 settings.load_settings();
 
-// Listen for messages from content scripts.
+// Listen for messages from other pages.
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
         /* console.log(sender.tab ? 
@@ -71,9 +66,7 @@ chrome.extension.onRequest.addListener(
                     "from the extension"); */
 
         if (request.loaded === false) {
-                       
             update_icon("off");
-
             var parsed_url = get_location(sender.tab.url);
             //console.log(parsed_url.hostname);
             
@@ -95,7 +88,7 @@ chrome.extension.onRequest.addListener(
                 //});
         }
 
-        // Messages from content script        
+        // Messages from content script:        
         if (request.toggle_icon === "on") {
             update_icon("on");
         }
@@ -117,7 +110,6 @@ chrome.extension.onRequest.addListener(
                 var time_limit = settings.time_limits[request.url];
                 var time_elapsed = settings.elapsed_times[request.url];
                 settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-                //console.log(settings.elapsed_times[request.url], settings.time_limits[request.url]);
             }
 
             else {
@@ -126,6 +118,8 @@ chrome.extension.onRequest.addListener(
                 settings.timerbutton_elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
                 //console.log("changing times from a timerbutton");
             }
+
+            update_icon("on");
             
             var badge_string = '';
             if (settings.show_badge === true) {
@@ -135,8 +129,6 @@ chrome.extension.onRequest.addListener(
 
             chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
             chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
-
-            
 
             if (time_elapsed > time_limit) {
                 settings.restore_url = sender.tab.url;
@@ -149,7 +141,7 @@ chrome.extension.onRequest.addListener(
             sendResponse({time_limit: settings.default_time_limit}); 
         }
         
-        // Messages from timeup page
+        // Messages from timeup page:
         if (request.close_tabs === true) {
             chrome.tabs.remove(sender.tab.id);
         }
@@ -159,11 +151,11 @@ chrome.extension.onRequest.addListener(
             var reset_hostname = get_location(settings.restore_url).hostname;
             //console.log(reset_hostname);
             settings.elapsed_times[reset_hostname] = 0;
-            chrome.tabs.update(sender.tab.id, {url: settings.restore_url});
+            //chrome.tabs.update(sender.tab.id, {url: settings.restore_url});
         }
         
         // Messages from popup
-        if (request.load_settings === true) {
+        if (request.show_settings === true) {
             var options_url = chrome.extension.getURL('options.html')
             chrome.tabs.create({url: options_url });
         }
@@ -179,12 +171,10 @@ chrome.extension.onRequest.addListener(
                     chrome.tabs.reload(response.id);
                 });
             });
-
         }
 
         if (request.start_timer === true) {
             //console.log("Timer started!");
-            
             chrome.windows.getCurrent(function(win) {
                 chrome.tabs.getSelected(win.id, function (response){
                     var active_hostname = get_location(response.url).hostname;
@@ -200,9 +190,7 @@ chrome.extension.onRequest.addListener(
         if (request.update_settings === true) {
             settings.load_settings();
         }
-
 });
-
 
 // Listen for new tabs.
 chrome.tabs.onCreated.addListener(function(tab) {
@@ -223,7 +211,7 @@ chrome.tabs.onRemoved.addListener(function(tab) {
     update_icon("off");
 }); 
 
-var check_interval = 5000;
+var check_interval = 1000;
 var check_interval_set = false;
 set_check_interval();
 
@@ -236,14 +224,6 @@ function set_check_interval () {
     }
 }
     
-function send_closed_message (close_tab) {
-    //console.log(close_tab);
-    chrome.tabs.get(close_tab, function(tab) {
-        //console.log("sending tab_closed to tab " + tab.id);
-        chrome.tabs.sendRequest(tab.id, {close: true}); 
-    });
-}    
-
 function check_times () {
     //console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
@@ -279,6 +259,8 @@ function update_times (response, tab) {
                 settings.timerbutton_elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
                 //console.log("changing times from a timerbutton");
             }
+
+            update_icon("on");
             
             var badge_string = '';
             if (settings.show_badge === true) {

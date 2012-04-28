@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("start-timer").addEventListener('click', start_timer);
     document.getElementById("add-page").addEventListener('click', add_page);
-    document.getElementById("load-settings").addEventListener('click', load_settings);
+    document.getElementById("load-settings").addEventListener('click', show_settings);
 });
 
 function start_timer () {
@@ -16,9 +16,9 @@ function add_page () {
  window.close();
 }
 
-function load_settings () {
- console.log("load_settings()");
- chrome.extension.sendRequest({load_settings: true});
+function show_settings () {
+ console.log("show_settings()");
+ chrome.extension.sendRequest({show_settings: true});
  window.close();
 }
 

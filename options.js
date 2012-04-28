@@ -16,7 +16,7 @@ function save_new_url () {
     var new_secs = new_time * 60;
     console.log(new_secs);
 
-    if (new_secs !== isNaN(new_secs) && new_url !== '') {
+    if (!(isNaN(new_secs)) && new_url !== '') {
         if (new_url in document.timesink_urls === false) {
             document.timesink_urls[new_url] = new_secs;
             console.log(document.timesink_urls);
@@ -38,7 +38,6 @@ function save_new_url () {
             var editlistener = function() {edit_url(this)};
             edit_button.editlistener = editlistener;
             document.getElementById('edit').addEventListener('click', editlistener);        
-        
        
             var del_button = edit_button.nextElementSibling;
             del_button.addEventListener('click', function() {delete_url(this)});
@@ -47,7 +46,6 @@ function save_new_url () {
             console.log(document.timesink_urls);
         }
     }
-
 }
 
 function delete_url (element) {
@@ -80,8 +78,6 @@ function edit_url (element) {
     placeholder = time_cell.innerText;
     time_cell.innerHTML = '<input id="edit-time-field" type="text" class="span1"></input>';
     time_cell.firstChild.value = placeholder;
-
-   
 }
 
 function save_changed_url (element) {
@@ -93,7 +89,6 @@ function save_changed_url (element) {
 
     var url_field = url_cell.firstChild;
     var new_url = url_field.value;
-    
     
     var time_field = time_cell.firstChild;
     var new_time = time_field.value;
@@ -149,7 +144,6 @@ function load_settings (name) {
 function restore_settings () {
 
     if ('default_time' in document.extra_settings === true) {
-
         var badge_checkbox = document.getElementById('show-badge');
         badge_checkbox.checked = document.extra_settings['show_badge'];
 
@@ -176,14 +170,9 @@ function restore_settings () {
         var editlistener = function() {edit_url(this)};
         edit_button.editlistener = editlistener;
         document.getElementById('edit').addEventListener('click', editlistener);        
-        
        
         var del_button = edit_button.nextElementSibling;
         del_button.addEventListener('click', function() {delete_url(this)});
-        
-        //var onclick_string = 'delete_url("' + url + '")';
-        //del_button.setAttribute('onclick', onclick_string);
-        
     }
 }
 

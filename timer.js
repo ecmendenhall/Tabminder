@@ -93,6 +93,19 @@ function main () {
         //console.log("focus");
         } );
 
+    // Listen for window activity
+    window.addEventListener('activate', function () {
+        timer.start();
+        //console.log("focus");
+        } );
+
+    // Listen for mouse activity
+    window.addEventListener('DOMMouseScroll', function () {
+        timer.start();
+        //console.log("focus");
+        } );
+
+
     // Listen for window blur
     window.addEventListener('blur', function () { 
         timer.stop();

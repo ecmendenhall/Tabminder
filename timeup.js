@@ -8,7 +8,6 @@ chrome.extension.onRequest.addListener(
         console.log(sender.tab ? 
                     "from a content script:" + sender.tab.url:
                     "from the extension");
-        
     });
 
 function close_tabs () {
@@ -19,4 +18,5 @@ function close_tabs () {
 function restart_timer () {
     console.log("restart_timer()");
     chrome.extension.sendRequest({restart_timer: true});
+    history.back();
 } 
