@@ -14,7 +14,6 @@ Timer.prototype.tick = function () {
         thisObj = this;
         var tick_timeout = setTimeout(function() { thisObj.tick(); }, 1000);
         this.tick_timeout = tick_timeout;
-        //this.tick_timeouts.push(tick_timeout_id);
         //console.log("timeout ids :", this.tick_timeouts.length);
         //console.log("timeout id: ", tick_timeout);
     }
@@ -43,10 +42,6 @@ Timer.prototype.stop = function () {
     //console.log("clearing timeout id: ", this.tick_timeout);
     clearTimeout(this.tick_timeout);
     this.reset();
-    //for (var i = 0; i < this.tick_timeouts.length; i++) {
-    //    var tick_timeout_id = this.tick_timeouts.pop(i);
-    //    console.log("clearing timeout for id: ", tick_timeout_id);
-    //    window.clearTimeout(tick_timeout_id);
     //}
 };
 
