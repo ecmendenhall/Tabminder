@@ -201,7 +201,8 @@ chrome.tabs.onCreated.addListener(function(tab) {
                tab.url.indexOf('chrome-extension://') === -1 &&
                tab.url.indexOf('chrome-devtools://') === -1) {
                 //console.log("checking if timer loaded");
-                chrome.tabs.executeScript(tabId, {file: "check_timer.js"}); }
+                chrome.tabs.executeScript(tabId, {file: "check_timer.js"}); 
+            }
         }
     });
 });
@@ -210,6 +211,15 @@ chrome.tabs.onCreated.addListener(function(tab) {
 chrome.tabs.onRemoved.addListener(function(tab) {
     update_icon("off");
 }); 
+
+// Listen for connections from content scripts
+chrome.extension.onConnect.addListener(function(port) {
+    port.onMessage.addListener(function(msg) {
+        if (msg.name == "update") {
+            update_times(msg.update, port.sender.tab.id);
+        }
+    });
+});
 
 var check_interval = 1000;
 var check_interval_set = false;
@@ -227,9 +237,12 @@ function set_check_interval () {
 function check_times () {
     //console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
-        //console.log("Sending request for time to tab ", tab.id);
-        chrome.tabs.sendRequest(tab.id, {send_time: true}, function(response) {
-            update_times(response, tab); } );
+        if(tab.url.indexOf('chrome://') === -1 && 
+           tab.url.indexOf('chrome-extension://') === -1 &&
+           tab.url.indexOf('chrome-devtools://') === -1) {
+               var port =  chrome.tabs.connect(tab.id, {name: "timecheck"});
+               port.postMessage({send_time: true});
+        }
     });
 }
 
@@ -250,6 +263,7 @@ function update_times (response, tab) {
                 var time_limit = settings.time_limits[response.url];
                 var time_elapsed = settings.elapsed_times[response.url];
                 settings.elapsed_times[response.url] = time_elapsed + (check_interval / 1000)
+                console.log(response.current_time);
                 //console.log(settings.elapsed_times[response.url], settings.time_limits[response.url]);
             }
 

@@ -1,6 +1,6 @@
 {
   "name": "Tabminder",
-  "version": "0.9.1",
+  "version": "0.9.1.1",
   "background": { "scripts": ["background.js"] },
   "options_page": "options.html",
   "permissions": [
@@ -11,5 +11,10 @@
     "icons": ["img/off.png", "img/on.png"],
     "default_popup": "popup.html"
   },
+  "icons": {
+      "48": "img/tabminder48.png",
+      "128": "img/tabminder128.png"
+  },
+  "description": "A simple extension that provides gentle reminders when browsing distracting sites.",
   "manifest_version": 2
 }

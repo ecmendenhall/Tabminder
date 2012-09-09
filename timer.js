@@ -50,12 +50,6 @@ Timer.prototype.reset = function () {
     this.time_ticked = 0;
 };
 
-Timer.prototype.send_time = function () {
-    //console.log("send_time()");
-    chrome.extension.sendRequest({time_ticked: this.time_ticked,
-                                  url: location.hostname});
-};
-
 Timer.prototype.get_time_limit = function () {
     chrome.extension.sendRequest({get_time: true,
                                   url: location.hostname},
@@ -100,32 +94,25 @@ function main () {
         //console.log("focus");
         } );
 
-
     // Listen for window blur
     window.addEventListener('blur', function () { 
         timer.stop();
         //console.log("blur"); 
         } );
 
-   
-    chrome.extension.onRequest.addListener(
-    function(request, sender, sendResponse) {
-        /* console.log(sender.tab ? 
-                    "from a content script:" + sender.tab.url:
-                    "from the extension"); */
-        
-        // Listen for tab close
-        if (request.close === true) {
-           sendResponse({timer_stop: "stopped"});
-           timer.stop();
-        }
-
-        // Listen for time requests
-        if (request.send_time === true) {
-           sendResponse({current_time: timer.time_ticked, url: location.hostname});
-        }
-
+    // Listen for incoming connections from background script
+    chrome.extension.onConnect.addListener(function(port) {
+        port.onMessage.addListener(function(msg) {
+            if (msg.send_time == true) {
+                var sendport = chrome.extension.connect();
+                sendport.postMessage({name: "update",
+                                      update: { current_time: timer.time_ticked, 
+                                                url: location.hostname}
+                                      });
+            }
+        });
     });
+
 }
 
 main();
