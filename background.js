@@ -4,7 +4,6 @@ function Settings () {
     this.elapsed_times = {};
     this.timerbutton_elapsed_times = {};
     this.default_time_limit = 600;
-    this.redirect_url = "timeup.html";
     this.restore_url = "";
     this.show_badge = true;
     this.loaded = false;
@@ -58,9 +57,9 @@ settings.load_settings();
 // Listen for messages from other pages.
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
-         console.log(sender.tab ? 
+         /* console.log(sender.tab ? 
                     "from a content script:" + sender.tab.url:
-                    "from the extension"); 
+                    "from the extension"); */
 
         if (request.loaded === false) {
             update_icon("off");
@@ -120,19 +119,20 @@ chrome.extension.onRequest.addListener(
                 update_icon("off");
             }
         } */
-       
+        /*
         // Messages from timeup page:
         if (request.close_tabs === true) {
             chrome.tabs.remove(sender.tab.id);
         }
 
         if (request.restart_timer === true) {
+            console.log("restarting timer");
             //console.log(settings.restore_url);
             var reset_hostname = get_location(settings.restore_url).hostname;
             //console.log(reset_hostname);
             settings.elapsed_times[reset_hostname] = 0;
-            //chrome.tabs.update(sender.tab.id, {url: settings.restore_url});
-        }
+            chrome.tabs.update({url: settings.restore_url});
+        } */
         
         // Messages from popup
         if (request.show_settings === true) {
@@ -192,7 +192,20 @@ chrome.tabs.onRemoved.addListener(function(tab) {
 chrome.extension.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(msg) {
         if (msg.name == "update") {
-            update_times(msg.update, port.sender.tab.id);
+            update_times(msg.update, port.sender.tab);
+        }
+        // Messages from timeup page:
+        if (msg.close_tabs === true) {
+            chrome.tabs.remove(port.sender.tab.id);
+        }
+
+        if (msg.restart_timer === true) {
+            console.log("restarting timer");
+            //console.log(settings.restore_url);
+            var reset_hostname = get_location(settings.restore_url).hostname;
+            //console.log(reset_hostname);
+            settings.elapsed_times[reset_hostname] = 0;
+            chrome.tabs.update({url: settings.restore_url});
         }
     });
 });
@@ -203,7 +216,7 @@ set_check_interval();
 
 function set_check_interval () {
     // Check for current tab time every check_interval milliseconds.
-    //console.log("set_check_interval()");
+    console.log("set_check_interval()");
     if (check_interval_set === false) {
         check_interval_set = true;
         var checktime_interval_id = setInterval(check_times, check_interval);
@@ -211,15 +224,15 @@ function set_check_interval () {
 }
     
 function check_times () {
-    //console.log("check_times()");
+    console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
-        console.log(tab.url);
+        //console.log(tab.url);
         var parsed_url = get_location(tab.url);
-        console.log(settings.blocklist);
-        console.log(tab.status, /^(https?):/.test(tab.url), (settings.blocklist.indexOf(parsed_url.hostname) !== -1));
-        console.log((tab.status === 'complete') 
-            && /^(https?):/.test(tab.url)
-            && (settings.blocklist.indexOf(parsed_url.hostname) !== -1));
+        //console.log(settings.blocklist);
+        //console.log(tab.status, /^(https?):/.test(tab.url), (settings.blocklist.indexOf(parsed_url.hostname) !== -1));
+        //console.log((tab.status === 'complete') 
+        //    && /^(https?):/.test(tab.url)
+        //    && (settings.blocklist.indexOf(parsed_url.hostname) !== -1));
         if(tab.status === 'complete' 
             && /^(https?):/.test(tab.url)
             && (settings.blocklist.indexOf(parsed_url.hostname) !== -1)) {
@@ -227,10 +240,7 @@ function check_times () {
                     var port =  chrome.tabs.connect(tab.id, {name: "timecheck"});
                     port.postMessage({send_time: true});
                 });
-        } else {
-            console.log("Not in blocklist!");
-        }
-
+        } 
     });
 }
 
@@ -274,9 +284,11 @@ function update_times (update, tab) {
             chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
 
             if (time_elapsed > time_limit) {
+                console.log("Time's up!");
                 settings.restore_url = tab.url;
-                chrome.tabs.update(tab.id, {url: settings.redirect_url});
+                var timeup_url = chrome.extension.getURL('timeup.html');
                 update_icon("off");
+                chrome.tabs.update({url: timeup_url});
             }
     }
 }
