@@ -1,6 +1,14 @@
+function Settings () {
+    this.timesink_urls;
+    this.extra_settings;
+    this.loaded = false;
+}
+
+var settings = new Settings;
+
 document.addEventListener('DOMContentLoaded', function () {
-    document.timesink_urls = load_settings('timesink_urls');
-    document.extra_settings = load_settings('extra_settings');
+    settings.timesink_urls = load_settings('timesink_urls');
+    settings.extra_settings = load_settings('extra_settings');
     restore_settings();
     document.getElementById("new-url").addEventListener('click', save_new_url);
     document.getElementById("save-button").addEventListener('click', save_extra_settings);
@@ -17,9 +25,9 @@ function save_new_url () {
     console.log(new_secs);
 
     if (!(isNaN(new_secs)) && new_url !== '') {
-        if (new_url in document.timesink_urls === false) {
-            document.timesink_urls[new_url] = new_secs;
-            console.log(document.timesink_urls);
+        if (new_url in settings.timesink_urls === false) {
+            settings.timesink_urls[new_url] = new_secs;
+            console.log(settings.timesink_urls);
                 
             var url_table = document.getElementById("url-table");
             var new_row = url_table.insertRow(0);
@@ -42,8 +50,8 @@ function save_new_url () {
             var del_button = edit_button.nextElementSibling;
             del_button.addEventListener('click', function() {delete_url(this)});
 
-            save_settings('timesink_urls', document.timesink_urls);
-            console.log(document.timesink_urls);
+            save_settings('timesink_urls', settings.timesink_urls);
+            console.log(settings.timesink_urls);
         }
     }
 }
@@ -54,9 +62,9 @@ function delete_url (element) {
     console.log(url);
     var url_row = document.getElementById(url);
     url_row.parentNode.removeChild(url_row);  
-    delete document.timesink_urls[url];
-    save_settings('timesink_urls', document.timesink_urls);
-    console.log(document.timesink_urls);
+    delete settings.timesink_urls[url];
+    save_settings('timesink_urls', settings.timesink_urls);
+    console.log(settings.timesink_urls);
 }
 
 function edit_url (element) {
@@ -94,12 +102,15 @@ function save_changed_url (element) {
     var new_time = time_field.value;
     var new_secs = new_time * 60;
     console.log(time_field.value);
+    console.log(!isNaN(new_time));
 
-    if (new_secs !== isNaN(new_secs) && new_url !== '') {
+    if (!isNaN(new_time) 
+        && new_time > 0
+        && new_url !== '') {
     
         var old_url = url_row.id;
-        delete document.timesink_urls[old_url];
-        document.timesink_urls[new_url] = new_secs;
+        delete settings.timesink_urls[old_url];
+        settings.timesink_urls[new_url] = new_secs;
         
         url_row.id = new_url;
 
@@ -120,8 +131,8 @@ function save_changed_url (element) {
         var del_button = edit_button.nextElementSibling;
         del_button.addEventListener('click', function() {delete_url(this)});
 
-        save_settings('timesink_urls', document.timesink_urls);
-        console.log(document.timesink_urls);
+        save_settings('timesink_urls', settings.timesink_urls);
+        console.log(settings.timesink_urls);
     }
 }
 
@@ -143,16 +154,16 @@ function load_settings (name) {
 
 function restore_settings () {
 
-    if ('default_time' in document.extra_settings === true) {
+    if ('default_time' in settings.extra_settings === true) {
         var badge_checkbox = document.getElementById('show-badge');
-        badge_checkbox.checked = document.extra_settings['show_badge'];
+        badge_checkbox.checked = settings.extra_settings['show_badge'];
 
         var default_time = document.getElementById('default-time');
-        default_time.value = document.extra_settings['default_time'];
+        default_time.value = settings.extra_settings['default_time'];
     }
            
     var url_table = document.getElementById("url-table");
-    for (var url in document.timesink_urls) {
+    for (var url in settings.timesink_urls) {
         var new_row = url_table.insertRow(0);
         new_row.setAttribute('id', url);        
         var url_cell = new_row.insertCell(0);
@@ -160,7 +171,7 @@ function restore_settings () {
         var del_cell = new_row.insertCell(2);
         var url_text = document.createTextNode(url);
         url_cell.appendChild(url_text);
-        var time_mins = Math.round(document.timesink_urls[url] / 60);
+        var time_mins = Math.round(settings.timesink_urls[url] / 60);
         var time_text = document.createTextNode(time_mins.toString());
         time_cell.appendChild(time_text);
         
@@ -179,10 +190,14 @@ function restore_settings () {
 function save_extra_settings () {
     console.log("save_extra_settings();");
     var default_time = document.getElementById('default-time').value
-    var show_badge = document.getElementById('show-badge').checked
-    document.extra_settings['default_time'] = default_time;
-    document.extra_settings['show_badge'] = show_badge;
-    console.log(document.extra_settings);
-    save_settings('extra_settings', document.extra_settings);
+    if (!isNaN(default_time) 
+        && default_time > 0) { 
+        settings.extra_settings['default_time'] = default_time;
+    }
+    console.log(document.getElementById('show-badge').checked);
+    var show_badge = document.getElementById('show-badge').checked    
+    settings.extra_settings['show_badge'] = show_badge;
+    console.log(settings.extra_settings);
+    save_settings('extra_settings', settings.extra_settings);
     chrome.extension.sendRequest({update_settings: true});
 }
