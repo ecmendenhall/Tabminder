@@ -61,21 +61,6 @@ chrome.extension.onRequest.addListener(
                     "from a content script:" + sender.tab.url:
                     "from the extension"); */
 
-        if (request.loaded === false) {
-            update_icon("off");
-            var parsed_url = get_location(sender.tab.url);
-            console.log(parsed_url.hostname);
-            
-            // If url is in blocklist, inject content script.
-            if (settings.blocklist.indexOf(parsed_url.hostname) != -1) {
-                chrome.tabs.executeScript(sender.tab.id, 
-                {file: "timer.js"}, function () {
-                    chrome.tabs.executeScript(sender.tab.id, { code: "var timer_loaded = true;" }
-                    );
-                }); 
-            }
-        }
-
         // Messages from content script:        
         if (request.toggle_icon === "on") {
             update_icon("on");
@@ -84,55 +69,6 @@ chrome.extension.onRequest.addListener(
         if (request.toggle_icon === "off") {
             update_icon("off");
         }
-        
-        /* Convert this to use ports!
-        if (request.current_time && request.url) {
-            var parsed_url = get_location(request.url);
-
-            if (settings.blocklist.indexOf(parsed_url.hostname) != -1) {
-                var time_limit = settings.time_limits[request.url];
-                var time_elapsed = settings.elapsed_times[request.url];
-                settings.elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-            }
-
-            else {
-                var time_limit = settings.default_time_limit
-                var time_elapsed = settings.timerbutton_elapsed_times[request.url];
-                settings.timerbutton_elapsed_times[request.url] = time_elapsed + (check_interval / 1000)
-                //console.log("changing times from a timerbutton");
-            }
-
-            update_icon("on");
-            
-            var badge_string = '';
-            if (settings.show_badge === true) {
-                var badge_string = Math.round((time_limit - time_elapsed)/60).toString();
-                console.log(badge_string, time_limit, time_elapsed);
-            }
-
-            chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
-            chrome.browserAction.setBadgeText({text: badge_string, tabId: sender.tab.id});
-
-            if (time_elapsed > time_limit) {
-                settings.restore_url = sender.tab.url;
-                chrome.tabs.update(sender.tab.id, {url: settings.redirect_url});
-                update_icon("off");
-            }
-        } */
-        /*
-        // Messages from timeup page:
-        if (request.close_tabs === true) {
-            chrome.tabs.remove(sender.tab.id);
-        }
-
-        if (request.restart_timer === true) {
-            console.log("restarting timer");
-            //console.log(settings.restore_url);
-            var reset_hostname = get_location(settings.restore_url).hostname;
-            //console.log(reset_hostname);
-            settings.elapsed_times[reset_hostname] = 0;
-            chrome.tabs.update({url: settings.restore_url});
-        } */
         
         // Messages from popup
         if (request.show_settings === true) {
@@ -172,17 +108,6 @@ chrome.extension.onRequest.addListener(
         }
 });
 
-/*
-// Listen for new tabs.
-chrome.tabs.onCreated.addListener(function(tab) {
-	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-        
-        if(changeInfo.status === 'complete' && /^(https?):/.test(changeInfo.url)) {
-            chrome.tabs.executeScript(tabId, {file: "check_timer.js"}); 
-        }
-    });
-});*/
-
 // Listen for closed tabs.
 chrome.tabs.onRemoved.addListener(function(tab) {
     update_icon("off");
@@ -191,6 +116,9 @@ chrome.tabs.onRemoved.addListener(function(tab) {
 // Listen for connections from content scripts
 chrome.extension.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(msg) {
+        if (msg.name == "newtimer") {
+            console.log("New timer!");
+        }
         if (msg.name == "update") {
             update_times(msg.update, port.sender.tab);
         }
@@ -210,20 +138,39 @@ chrome.extension.onConnect.addListener(function(port) {
     });
 });
 
-var check_interval = 1000;
-var check_interval_set = false;
-set_check_interval();
+//var check_interval = 1000;
+//var check_interval_set = false;
+//set_check_interval();
 
-function set_check_interval () {
+/*function set_check_interval () {
     // Check for current tab time every check_interval milliseconds.
     console.log("set_check_interval()");
     if (check_interval_set === false) {
         check_interval_set = true;
         var checktime_interval_id = setInterval(check_times, check_interval);
     }
-}
-    
-function check_times () {
+}*/
+
+
+chrome.tabs.onUpdated.addListener(function(tab, changeInfo) {
+    console.log("Tab updated!");    
+    if(changeInfo.status === 'complete') {
+        console.log("Change complete!");
+        chrome.tabs.getSelected(null, function(tab) {
+            var parsed_url = get_location(tab.url);
+            console.log(parsed_url.hostname);
+            if(/^(https?):/.test(tab.url)
+               && (settings.blocklist.indexOf(parsed_url.hostname) !== -1)) {
+                   console.log("Injecting timer script");
+                   chrome.tabs.executeScript(tab.id, {file: "timer.js"});
+            } else {
+                console.log("Not on blocklist.");
+            }
+        });
+    }
+ });
+            
+/* function check_times () {
     console.log("check_times()");
     chrome.tabs.getSelected(null, function(tab) {
         //console.log(tab.url);
@@ -242,7 +189,7 @@ function check_times () {
                 });
         } 
     });
-}
+} */
 
 function update_icon(icon_status) {
     //console.log("update_icon()");

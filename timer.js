@@ -49,8 +49,16 @@ Timer.prototype.toggle_icon = function (status) {
     chrome.extension.sendRequest({toggle_icon: status});
 }
 
+Timer.prototype.send_times = function (port) {
+    port.postMessage({name: "update",
+                      update: { time_ticked: this.time_ticked, 
+                                hostname: location.hostname}
+                      });
+}
+
 function main () {
     console.log("main()");
+    var port = chrome.extension.connect();
     timer = new Timer();
     timer.start();
 
@@ -74,15 +82,15 @@ function main () {
 
     // Listen for window blur
     window.addEventListener('blur', function () { 
+        timer.send_times(port);
         timer.stop();
         console.log("blur"); 
         } );
 
     // Listen for incoming connections from background script
-    chrome.extension.onConnect.addListener(function(port) {
+    /*chrome.extension.onConnect.addListener(function(port) {
         port.onMessage.addListener(function(msg) {
             if (msg.send_time == true) {
-                var sendport = chrome.extension.connect();
                 if (timer.ticking) {
                     var current_time = timer.time_ticked + timer.total_time; 
                 } else {
@@ -94,7 +102,7 @@ function main () {
                                       });
             }
         });
-    });
+    }); */
 
 }
 
