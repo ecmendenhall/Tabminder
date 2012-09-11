@@ -16,5 +16,6 @@
       "128": "img/tabminder128.png"
   },
   "description": "A simple extension that provides gentle reminders when browsing distracting sites.",
-  "manifest_version": 2
+  "manifest_version": 2,
+  "web_accessible_resources": ["timeup.html"]
 }
