@@ -111,6 +111,12 @@ chrome.extension.onConnect.addListener(function(port) {
     });
 });
 
+// Listen for closed tabs
+chrome.tabs.onRemoved.addListener(function(tab) {
+    update_icon("off");
+});
+
+// Listen for updated tabs
 chrome.tabs.onUpdated.addListener(function(tab, changeInfo) {
     if(changeInfo.status === 'complete') {
         chrome.tabs.query({active: true}, function(tab_array) {
