@@ -11,6 +11,6 @@ function close_tabs () {
 }
 
 function restart_timer () {
-    console.log("restart_timer()");
     port.postMessage({restart_timer: true});
+    history.back();
 } 
