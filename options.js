@@ -28,27 +28,44 @@ function save_new_url () {
         if (new_url in settings.timesink_urls === false) {
             settings.timesink_urls[new_url] = new_secs;
             console.log(settings.timesink_urls);
-                
-            var url_table = document.getElementById("url-table");
-            var new_row = url_table.insertRow(0);
-            new_row.setAttribute('id', new_url);
-            var url_cell = new_row.insertCell(0);
-            var time_cell = new_row.insertCell(1);
-            var del_cell = new_row.insertCell(2);
-            var url_text = document.createTextNode(new_url);
-            url_cell.appendChild(url_text);
-            var time_text = document.createTextNode(new_time);
-            time_cell.appendChild(time_text);
+
             
-            var newrow = '<a href="" id="edit">Edit</a> <button class="trash custom-appearance" id="delete"><span class="lid"></span><span class="can"</span></button>';
-            del_cell.innerHTML = newrow;
-        
-            var edit_link = del_cell.firstChild;
+            var url_list = document.getElementById("url-list");
+            var add_url = document.getElementById("add-url");
+            var new_li = document.createElement("li");
+            url_list.insertBefore(new_li, add_url);
+            new_li.setAttribute('id', new_url);
+                
+            var url_div = document.createElement("div");
+            url_div.setAttribute("class", "span6 li-span6");
+            new_li.appendChild(url_div);
+
+            var time_div = document.createElement("div");
+            time_div.setAttribute("class", "span2 li-span2");
+            new_li.appendChild(time_div);
+
+            var del_div = document.createElement("div");
+            del_div.setAttribute("class", "span4 li-span4");
+            new_li.appendChild(del_div);
+
+            var url_text = document.createTextNode(new_url);
+            url_div.appendChild(url_text);
+
+            var time_text = document.createTextNode(new_time);
+            time_div.appendChild(time_text);
+                
+            var del_controls = '<a href="" id="edit">Edit</a>\
+                                <button class="trash custom-appearance" id="delete">\
+                                <span class="lid"></span><span class="can"</span></button>';
+
+            del_div.innerHTML = del_controls;
+
+            var edit_link = del_div.firstChild;
             var editlistener = function() {edit_url(this)};
             edit_link.editlistener = editlistener;
             document.getElementById('edit').addEventListener('click', editlistener);        
-       
-            var del_button = edit_button.nextElementSibling;
+               
+            var del_button = edit_link.nextElementSibling;
             del_button.addEventListener('click', function() {delete_url(this)});
 
             save_settings('timesink_urls', settings.timesink_urls);
@@ -77,31 +94,31 @@ function edit_url (element) {
     element.savelistener = savelistener;
     element.addEventListener('click', savelistener);
     var url = element.parentNode.parentNode.id;
-    var url_row = document.getElementById(url);
-    var url_cell = url_row.firstChild;
-    var time_cell = url_cell.nextSibling;
-    var del_cell = time_cell.nextSibling;
+    var url_li = document.getElementById(url);
+    var url_div = url_li.firstChild;
+    var time_div = url_div.nextSibling;
+    var del_div = time_div.nextSibling;
     
-    var placeholder = url_cell.innerText;
-    url_cell.innerHTML = '<input id="edit-url-field" type="text" class="span4"></input>';
-    url_cell.firstChild.value = placeholder;
+    var placeholder = url_div.innerText;
+    url_div.innerHTML = '<input id="edit-url-field" type="text" class="span6"></input>';
+    url_div.firstChild.value = placeholder;
     
-    placeholder = time_cell.innerText;
-    time_cell.innerHTML = '<input id="edit-time-field" type="text" class="span1"></input>';
-    time_cell.firstChild.value = placeholder;
+    placeholder = time_div.innerText;
+    time_div.innerHTML = '<input id="edit-time-field" type="text" class="span2"></input>';
+    time_div.firstChild.value = placeholder;
 }
 
 function save_changed_url (element) {
     console.log("save_changed_url()");    
-    var url_row = element.parentNode.parentNode;
-    var url_cell = url_row.firstChild;
-    var time_cell = url_cell.nextSibling;
-    var del_cell = time_cell.nextSibling;
+    var url_li = element.parentNode.parentNode;
+    var url_div = url_li.firstChild;
+    var time_div = url_div.nextSibling;
+    var del_div = time_div.nextSibling;
 
-    var url_field = url_cell.firstChild;
+    var url_field = url_div.firstChild;
     var new_url = url_field.value;
     
-    var time_field = time_cell.firstChild;
+    var time_field = time_div.firstChild;
     var new_time = time_field.value;
     var new_secs = new_time * 60;
     console.log(time_field.value);
@@ -110,25 +127,28 @@ function save_changed_url (element) {
         && new_time > 0
         && new_url !== '') {
     
-        var old_url = url_row.id;
+        var old_url = url_li.id;
         delete settings.timesink_urls[old_url];
         settings.timesink_urls[new_url] = new_secs;
         
-        url_row.id = new_url;
+        url_li.id = new_url;
 
         url_field.parentNode.removeChild(url_field);
-        url_cell.innerHTML = new_url;
+        url_div.innerHTML = new_url;
         
         time_field.parentNode.removeChild(time_field);
-        time_cell.innerHTML = new_time;
+        time_div.innerHTML = new_time;
 
-        var newrow =  '<a href="" id="edit">Edit</a> <button class="trash custom-appearance" id="delete"><span class="lid"></span><span class="can"</span></button>';
-        del_cell.innerHTML = newrow;
+        var del_controls = '<a href="" id="edit">Edit</a>\
+                            <button class="trash custom-appearance" id="delete">\
+                            <span class="lid"></span><span class="can"</span></button>';
+
+        del_div.innerHTML = del_controls;
         
-        var edit_button = del_cell.firstChild;
+        var edit_link = del_div.firstChild;
         var editlistener = function() {edit_url(this)};
-        edit_button.editlistener = editlistener;
-        edit_button.addEventListener('click', editlistener);        
+        edit_link.editlistener = editlistener;
+        edit_link.addEventListener('click', editlistener);        
         
        
         var del_button = edit_link.nextElementSibling;
