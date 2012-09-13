@@ -1,0 +1,17 @@
+body {
+    font-family: 'Lucida Grande', sans-serif;
+    padding-top: 20px;
+}
+
+header {
+    border-bottom: 1px solid #EEE;
+}
+
+.message {
+    font-size: 75%;
+}
+.container {
+    margin-left: 155px;
+    min-width: 600px;
+    max-width: 800px;
+}
