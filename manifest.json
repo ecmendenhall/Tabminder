@@ -1,17 +1,14 @@
 {
   "name": "Tabminder",
-  "version": "0.9.1.1",
-  "background": { "scripts": ["js/background.js"] },
-  "options_page": "html/options.html",
   "version": "0.9.1.2",
-  "background": { "scripts": ["background.js"] },
-  "options_page": "options.html",
+  "background": { "scripts": ["/js/background.js"] },
+  "options_page": "/html/options.html",
   "permissions": [
     "tabs", "http://*/*", "https://*/*"
        ],
   "browser_action": {
-    "default_icon": "img/off.png",
-    "icons": ["img/off.png", "img/on.png"],
+    "default_icon": "/img/off.png",
+    "icons": ["/img/off.png", "img/on.png"],
     "default_popup": "html/popup.html"
   },
   "icons": {
@@ -20,5 +17,5 @@
   },
   "description": "A simple extension that provides gentle reminders when browsing distracting sites.",
   "manifest_version": 2,
-  "web_accessible_resources": ["html/timeup.html", "html/settings.html", "html/help.html", "html/about.html"]
+  "web_accessible_resources": ["/html/timeup.html", "/html/settings.html", "/html/help.html", "/html/about.html"]
 }
