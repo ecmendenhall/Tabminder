@@ -1,0 +1,118 @@
+body {
+    font-family: 'Lucida Grande', sans-serif;
+    font-size: 75%;
+    overflow: hidden;
+    padding-top: 20px;
+}
+html.changing-content body { -webkit-transition: -webkit-transform 100ms }
+.sidebar > h1 {
+    -webkit-margin-after: 1em;
+    /* This value must match the top padding of the uber page header. */
+    -webkit-margin-before: 21px;
+    -webkit-margin-start: 23px;
+    color: rgb(92, 97, 102);
+}
+.sidebar > ul {
+    list-style-type: none;
+    padding: 0;
+}
+.sidebar > ul > li {
+    -webkit-border-start: 6px solid transparent;
+    -webkit-padding-start: 18px;
+    -webkit-user-select: none;
+}
+.sidebar > ul > li:hover { color: #777 }
+.sidebar > ul > li.selected {
+    -webkit-border-start-color: rgb(78, 87, 100);
+    cursor: default;
+    pointer-events: none;
+}
+li > button {
+    background-color: white;
+    border: 0;
+    color: #999;
+    cursor: pointer;
+    font: inherit;
+    line-height: 29px;
+    margin: 0;
+    padding: 0;
+}
+.selected button { color: rgb(70, 78, 90) }
+#navigation {
+    height: 100%;
+    left: 0;
+    margin-top: -20px;
+    position: absolute;
+    right: 15px;
+    width: 155px;
+    z-index: 3;
+}
+.pageheader h1 {
+    -webkit-margin-before: 21px;
+}
+#content {
+    height: 100%;
+    position: fixed;
+}
+.container {
+    position: fixed;
+    left: 155px;
+    box-sizing: border-box;
+    max-width: 888px;
+    min-width: 600px;
+}
+.pageheader {
+    background-image: -webkit-linear-gradient(white, white 40%, rgba(255, 255, 255, 0.92));
+    left: 155px;
+    max-width: 738px;
+    min-width: 600px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    border-bottom: 1px solid #EEE;
+}
+.span1 { width: 32px }
+.span2 { width: 64px }
+.span3 { width: 96px }
+.span4 { width: 128px }
+.span5 { width: 160px }
+.span6 { width: 192px }
+a:visited {
+    color: rgb(17, 85, 204);
+    text-decoration: underline;
+}
+tr { text-align: left }
+.header > label > h3 { display: inline }
+section {
+    -webkit-padding-start: 18px;
+    margin-bottom: 24px;
+    margin-top: 8px;
+    max-width: 600px;
+}
+#sections {
+    position: relative;
+    margin-top: 50px;
+}
+section > h3 { -webkit-margin-start: -18px }
+ul { 
+    list-style-type: none;
+    -webkit-padding-start: 0px;
+}
+#url-list > li > div {
+    display: inline;
+}
+.li-span2 {
+    margin-right: 56px;
+    padding: 3px;
+}
+.li-span4 {
+    padding: 3px;    
+}
+.li-span6 {
+    margin-right: 128px;
+    padding: 3px;
+}
+#add-url {
+    margin-top: 10px;
+}
