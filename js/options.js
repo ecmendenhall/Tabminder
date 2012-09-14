@@ -1,10 +1,10 @@
-function Settings () {
-    this.timesink_urls;
+function TempSettings () {
+    this.timesink_urls = [];
     this.extra_settings;
     this.loaded = false;
 }
 
-var settings = new Settings;
+var settings = new TempSettings;
 
 document.addEventListener('DOMContentLoaded', function () {
     settings.timesink_urls = load_settings('timesink_urls');
@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("help").addEventListener('click', function () { window.location = help; });
     var about = chrome.extension.getURL("/html/about.html");
     document.getElementById("about").addEventListener('click', function () { window.location = about; });
+
 });
 
 function save_new_url () {
@@ -30,11 +31,12 @@ function save_new_url () {
     var new_secs = new_time * 60;
     //console.log(new_secs);
 
-    if (!(isNaN(new_secs)) && new_url !== '') {
+    if (!(isNaN(new_secs))
+        && new_secs > 0 
+        && new_url !== '') {
         if (new_url in settings.timesink_urls === false) {
             settings.timesink_urls[new_url] = new_secs;
             //console.log(settings.timesink_urls);
-
             
             var url_list = document.getElementById("url-list");
             var add_url = document.getElementById("add-url");
@@ -84,8 +86,8 @@ function delete_url (element) {
     //console.log(element);
     var url = element.parentNode.parentNode.id;
     //console.log(url);
-    var url_row = document.getElementById(url);
-    url_row.parentNode.removeChild(url_row);  
+    var url_li = document.getElementById(url);
+    url_li.parentNode.removeChild(url_li);  
     delete settings.timesink_urls[url];
     save_settings('timesink_urls', settings.timesink_urls);
     //console.log(settings.timesink_urls);

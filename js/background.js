@@ -3,16 +3,17 @@ function Settings () {
     this.time_limits = {};
     this.elapsed_times = {};
     this.timerbutton_elapsed_times = {};
+    this.temp_blocklist = [];
     this.default_time_limit = 600;
     this.restore_url = "";
-    this.show_badge = true;
+    this.show_badge = false;
     this.loaded = false;
 }
 
 Settings.prototype.load_settings = function () {
 
     function get_JSON_settings (name) {
-        if (localStorage.getItem(name) === "undefined") {
+        if (localStorage.getItem(name) === undefined) {
             return {};
         }
         if (name in localStorage === false)
@@ -22,7 +23,7 @@ Settings.prototype.load_settings = function () {
         return setting;
         }
     
-    console.log("load_settings()");
+    //console.log("load_settings()");
     
     this.time_limits = get_JSON_settings('timesink_urls');
     for (url in this.time_limits) {
@@ -48,7 +49,7 @@ Settings.prototype.save_settings = function (name, setting) {
 function get_location(url) {
     var link = document.createElement("a");
     link.href = url;
-    return link
+    return link.hostname
 }
 
 settings = new Settings();
@@ -65,11 +66,11 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.add_page === true) {
-            console.log("Adding page to timesinks!");
+            //console.log("Adding page to timesinks!");
             chrome.tabs.query({active: true, currentWindow:true}, function (tab_array) {
                 var tab = tab_array[0];
-                var active_hostname = get_location(tab.url).hostname;
-                console.log(active_hostname);
+                var active_hostname = get_location(tab.url);
+                //console.log(active_hostname);
                 settings.time_limits[active_hostname] = settings.default_time_limit;
                 settings.save_settings('timesink_urls', settings.time_limits);
                 settings.load_settings();
@@ -78,10 +79,11 @@ chrome.extension.onRequest.addListener(
         }
 
         if (request.start_timer === true) {
-            console.log("Timer started!");
+            //console.log("Timer started!");
             chrome.tabs.query({active: true, currentWindow:true}, function (tab_array) {
                 var tab = tab_array[0];
-                var active_hostname = get_location(tab.url).hostname;
+                var active_hostname = get_location(tab.url);
+                settings.temp_blocklist.push(active_hostname);
                 settings.timerbutton_elapsed_times[active_hostname] = 0;
             });
         }
@@ -102,11 +104,16 @@ chrome.extension.onConnect.addListener(function(port) {
         }
 
         if (msg.restart_timer === true) {
-            console.log("restarting timer");
-            console.log(settings.restore_url);
-            var reset_hostname = get_location(settings.restore_url).hostname;
-            console.log(reset_hostname);
-            settings.elapsed_times[reset_hostname] = 0;
+            //console.log("restarting timer");
+            //console.log(settings.restore_url);
+            var reset_hostname = get_location(settings.restore_url);
+            //console.log(reset_hostname);
+            if (settings.blocklist.indexOf(reset_hostname) !== -1) {
+                settings.elapsed_times[reset_hostname] = 0;
+            }
+            if (settings.temp_blocklist.indexOf(reset_hostname) !== -1) {
+                settings.timerbutton_elapsed_times[reset_hostname] = 0;
+            }
         }
     });
 });
@@ -122,7 +129,7 @@ chrome.tabs.onUpdated.addListener(function(tab, changeInfo) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tab_array) {
             var tab = tab_array[0];
             var parsed_url = get_location(tab.url);
-            if (settings.blocklist.indexOf(parsed_url.hostname) !== -1) {
+            if (settings.blocklist.indexOf(parsed_url) !== -1) {
                 update_icon("on");
             } else {
                 update_icon("off");
@@ -133,30 +140,35 @@ chrome.tabs.onUpdated.addListener(function(tab, changeInfo) {
 
 var check_interval = 1000;
 var check_interval_set = false;
-set_check_interval();
+check_interval_set = set_check_interval(check_interval_set);
 
-function set_check_interval () {
+function set_check_interval (is_set) {
     // Check for current tab time every check_interval milliseconds.
-    console.log("set_check_interval()");
-    if (check_interval_set === false) {
-        check_interval_set = true;
-        var checktime_interval_id = setInterval(check_times, check_interval);
+    //console.log("set_check_interval()");
+    if (is_set === false) {
+        var checktime_interval_id = setInterval(check_active_tab, check_interval);
+        return true;
     }
 }
     
-function check_times () {
-    console.log("check_times()");
+function check_active_tab () {
+    //console.log("check_times()");
     chrome.tabs.query({active: true, currentWindow: true}, function(tab_array) {
-        console.log(tab_array);
+        //console.log(tab_array);
         var tab = tab_array[0];
-        console.log(tab);
+        //console.log(tab);
         var parsed_url = get_location(tab.url);
         
         if(tab.status === 'complete' 
-            && /^(https?):/.test(tab.url)
-            && (settings.blocklist.indexOf(parsed_url.hostname) !== -1)) {
-            update_icon("on");
-            update_times(tab, parsed_url.hostname);
+            && /^(https?):/.test(tab.url)) {
+                if (settings.blocklist.indexOf(parsed_url) !== -1 
+                    || settings.temp_blocklist.indexOf(parsed_url) !== -1 ) {
+                        update_icon("on");
+                        update_times(tab, parsed_url);
+                }
+                else {
+                    update_icon("off");
+                }
         } else {
             update_icon("off");
         }
@@ -173,24 +185,38 @@ function update_icon(icon_status) {
 
 function update_times (tab, hostname) {
     //console.log("update_times()");
+    
+    if (settings.blocklist.indexOf(hostname) !== -1) {
+        var time_limit = settings.time_limits[hostname];
+        console.log(time_limit);
+        var time_elapsed = settings.elapsed_times[hostname];
+        console.log(time_elapsed);
+        settings.elapsed_times[hostname] = time_elapsed + (check_interval / 1000);
+        console.log(settings.elapsed_times[hostname]);
+        //console.log("Time left: ", time_limit - time_elapsed);
+        //console.log(settings.elapsed_times[hostname], settings.time_limits[hostname]);
+    }
 
-    var time_limit = settings.time_limits[hostname];
-    var time_elapsed = settings.elapsed_times[hostname];
-    settings.elapsed_times[hostname] = time_elapsed + (check_interval / 1000)
-    console.log("Time left: ", time_limit - time_elapsed);
-    console.log(settings.elapsed_times[hostname], settings.time_limits[hostname]);
+    if (settings.temp_blocklist.indexOf(hostname) !== -1) {
+        var time_limit = settings.default_time_limit;
+        var time_elapsed = settings.timerbutton_elapsed_times[hostname];
+        settings.timerbutton_elapsed_times[hostname] = time_elapsed + (check_interval / 1000);
+    }
     
     var badge_string = '';
     if (settings.show_badge === true) {
         var badge_string = Math.round((time_limit - time_elapsed)/60).toString();
-        console.log(badge_string, time_limit, time_elapsed);
+        if (badge_string === 'NaN') {
+            badge_string = '';
+        }
+        //console.log(badge_string, time_limit, time_elapsed);
     }
 
     chrome.browserAction.setBadgeBackgroundColor({color: [99,99,99,255]});
     chrome.browserAction.setBadgeText({text: badge_string, tabId: tab.id});
 
     if (time_elapsed > time_limit) {
-        console.log("Time's up!");
+        //console.log("Time's up!");
         settings.restore_url = tab.url;
         var timeup_url = chrome.extension.getURL('/html/timeup.html');
         update_icon("off");
