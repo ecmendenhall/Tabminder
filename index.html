@@ -1,50 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>Tabminder by ecmendenhall</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Tabminder by ecmendenhall</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>Tabminder</h1>
+        <p>Stop distracted browsing before it starts.</p>
 
-        <header>
-          <h1>Tabminder</h1>
-          <h2>Stop distracted browsing before it starts.</h2>
-        </header>
+        <p class="view"><a href="https://github.com/ecmendenhall/Tabminder">View the Project on GitHub <small>ecmendenhall/Tabminder</small></a></p>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/ecmendenhall/Tabminder/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/ecmendenhall/Tabminder/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/ecmendenhall/Tabminder" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
 
-        <hr>
-
-        <section id="main_content">
-          <h1>About Tabminder</h1>
+        <ul>
+          <li><a href="https://github.com/ecmendenhall/Tabminder/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ecmendenhall/Tabminder/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ecmendenhall/Tabminder">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>About Tabminder</h1>
 
 <p>Tabminder is a simple Chrome extension designed to make you more mindful of browsing distracting sites.
-I use <a href="https://chrome.google.com/webstore/detail/laankejkbhbdhmipfmgcngdelahlfoji">StayFocusd</a> to manage 
-the total time I waste online, but I wanted a tool to remind to spend my daily quotas wisely and help prevent 
-distracted browsing from going too far in the first place. Tabminder prevents quick visits to Reddit, Twitter, 
-and Hacker News from turning into work-sucking time vortexes by providing a gentle reminder every few minutes. 
-Open a distracting tab, and Tabminder starts counting down from your preset time limit. When time's up, it will 
-prompt you to close the tab or restart the timer. This is just annoying enough to intercept distracted browsing, 
-but not so strict that it prevents you from taking a break once in a while. (You deserve it, right?)</p>
+It prevents quick visits to Reddit, Twitter, and Hacker News from turning into work-sucking time vortexes by providing a gentle reminder every few minutes. When you open a distracting tab, Tabminder starts counting down from a preset time limit. When time's up, it will prompt you to close the tab or restart the timer. This is just annoying enough to intercept distracted browsing, but not so strict that it prevents you from taking a break once in a while. (You deserve it, right?)</p>
 
 <h1>Get Tabminder</h1>
 
-<p>To install Tabminder, simply <a href="https://github.com/downloads/ecmendenhall/Tabminder/Tabminder.crx">click here</a>. If you're smarter than me and want to tinker with the source (you probably are), you can download Tabminder as an unpackaged extension by forking or cloning the <a href="https://github.com/ecmendenhall/Tabminder">project repository</a> or clicking the icons on the left.</p>
+<p>Tabminder is available in the <a href="https://chrome.google.com/webstore/detail/haffdbbhnmojclpkpmjhpdflflienkmk">Chrome web store</a>. If you're smarter than me and want to tinker with the source (you probably are), you can download Tabminder as an unpackaged extension by forking or cloning the <a href="https://github.com/ecmendenhall/Tabminder">project repository</a> or clicking the icons on the left.</p>
 
 <h1>How to use Tabminder</h1>
 
@@ -53,27 +44,23 @@ but not so strict that it prevents you from taking a break once in a while. (You
 
 <p>Once you've added it to Chrome, you'll see a stopwatch icon in the toolbar:</p>
 
-<p><img src="http://i.imgur.com/DITx7.png" alt="Toolbar icon"></p>
+<p><img src="http://i.imgur.com/gghfW.png" alt="Toolbar icon"></p>
 
 <p>Visit your <a>extension settings</a> and open the options page:</p>
 
-<p><img src="http://i.imgur.com/Sgpon.png" alt="Options"></p>
+<p><img src="http://i.imgur.com/3uImm.png" alt="Options"></p>
 
 <p>or click on the toolbar icon and select 'Settings':</p>
 
-<p><img src="http://i.imgur.com/nvGYw.png" alt="Toolbar settings"></p>
+<p><img src="http://i.imgur.com/KmWCy.png" alt="Toolbar settings"></p>
 
 <p>Add a few distracting sites to the list of timesinks and a time limit in minutes for each.  </p>
 
-<p><img src="http://i.imgur.com/cit55.png" alt="Timesink sites"></p>
+<p><img src="http://i.imgur.com/1Cap1.png" alt="Timesink sites"></p>
 
-<p>Make sure you enter each site's hostname as it appears in the address bar.<br><strong>Note:</strong> you might need to double-check your URLs. You don't need to enter 'http://' before the hostname, but you do need to include 'www' if it appears in the Chrome address bar (e.g. entering '<a href="http://www.reddit.com">reddit.com</a>' won't work, while entering '<a href="http://www.reddit.com">www.reddit.com</a>' will). If the timer doesn't start when you expect it to, double-check your URLs. I'm working on better filtering in future updates.</p>
+<p>Make sure you enter each site's hostname as it appears in the address bar.<br><strong>Note:</strong> you might need to double-check your URLs. You don't need to enter 'http://' before the hostname, but you do need to include 'www' if it appears in the Chrome address bar (e.g. entering '<a href="http://www.reddit.com">reddit.com</a>' won't work, while entering '<a href="http://www.reddit.com">www.reddit.com</a>' will). If the timer doesn't start when you expect it to, double-check your hostnames. I'm working on better filtering in future updates.</p>
 
-<p><img src="http://i.imgur.com/SeKhg.png" alt="Timesink sites list"></p>
-
-<p>Once you've entered your favorite timesinks, click the big button to save your settings.</p>
-
-<p><img src="http://i.imgur.com/LzptY.png" alt="Settings button"></p>
+<p><img src="http://i.imgur.com/TtzuE.png" alt="Timesink sites list"></p>
 
 <p>When you visit a distracting site, the icon will turn red:</p>
 
@@ -85,31 +72,29 @@ but not so strict that it prevents you from taking a break once in a while. (You
 
 <p>While you're browsing, you can add a site to the list of timesinks by clicking the toolbar icon and selecting "Add page to timesinks." Or, if you've found yourself on a distracting site, but don't want to add it permanently, you can start a temporary timer by selecting "Start timer."</p>
 
-<p><img src="http://i.imgur.com/Qpoaa.png" alt="Start timer"></p>
+<p><img src="http://i.imgur.com/KqCjn.png" alt="Start timer"></p>
 
 <p>Both these options use the default time limit from the settings page:</p>
 
-<p><img src="http://i.imgur.com/rjZ3m.png" alt="Default time"></p>
+<p><img src="http://i.imgur.com/AaKXp.png" alt="Default time"></p>
 
 <p>If you've been browsing a distracting site for too long, Tabminder will redirect you to a reminder page:</p>
 
-<p><img src="http://i.imgur.com/PS7jn.png" alt="Reminder page"></p>
+<p><img src="http://i.imgur.com/BT4D5.png" alt="Reminder page"></p>
 
 <p>If you realize you're wasting time, click "close tab" and get back to work. If you're reading something really interesting, click "restart timer" and the countdown will start over again.</p>
 
 <h1>License</h1>
 
-<p>This code is released under an MIT license. For more details, see the included file 'LICENSE.md'.
-The Tabminder extension uses styles from <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> 
-and icons from <a href="http://glyphicons.com/">Glyphicons</a>.</p>
-        </section>
-
-        <footer>
-          Tabminder is maintained by <a href="https://github.com/ecmendenhall">ecmendenhall</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-                  <script type="text/javascript">
+<p>This code is released under an MIT license. For more details, see the included file 'LICENSE.md'.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ecmendenhall">ecmendenhall</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -120,7 +105,5 @@ and icons from <a href="http://glyphicons.com/">Glyphicons</a>.</p>
             } catch(err) {}
           </script>
 
-      </div>
-    </div>
   </body>
 </html>
