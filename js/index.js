@@ -4,8 +4,8 @@ $(document).ready(function(){
         _gaq.push(['_trackEvent', 'Install', 'Extension Install']);
     }); 
     $("#donate-button").click(function(){
-        var amount = $("#prependedInput").value;
-        amount = parseInt(100 * amount);
-        _gaq.push(['_trackEvent', 'Donate', 'Donation with Value', 'Donation', amount]);
+        var amount = $("#prependedInput")[0].value;
+        amount = parseInt(amount * 100);
+        _gaq.push(['_trackEvent', 'Donate', 'Donation', 'Donation with value', amount]);
     });
 });
