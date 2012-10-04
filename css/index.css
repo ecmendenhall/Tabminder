@@ -42,7 +42,7 @@
             cursor: pointer;
         }
         #main-logo {
-            background: url(/img/tabminder128.png) no-repeat;
+            background: url(img/tabminder128.png) no-repeat;
             height: 80px;
             display: block;
             border-bottom: 1px solid #EEE;
