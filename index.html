@@ -1,109 +1,150 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Tabminder by ecmendenhall</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Tabminder</h1>
-        <p>Stop distracted browsing before it starts.</p>
-
-        <p class="view"><a href="https://github.com/ecmendenhall/Tabminder">View the Project on GitHub <small>ecmendenhall/Tabminder</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/ecmendenhall/Tabminder/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ecmendenhall/Tabminder/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ecmendenhall/Tabminder">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>About Tabminder</h1>
-
-<p>Tabminder is a simple Chrome extension designed to make you more mindful of browsing distracting sites.
-It prevents quick visits to Reddit, Twitter, and Hacker News from turning into work-sucking time vortexes by providing a gentle reminder every few minutes. When you open a distracting tab, Tabminder starts counting down from a preset time limit. When time's up, it will prompt you to close the tab or restart the timer. This is just annoying enough to intercept distracted browsing, but not so strict that it prevents you from taking a break once in a while. (You deserve it, right?)</p>
-
-<h1>Get Tabminder</h1>
-
-<p>Tabminder is available in the <a href="https://chrome.google.com/webstore/detail/haffdbbhnmojclpkpmjhpdflflienkmk">Chrome web store</a>. If you're smarter than me and want to tinker with the source (you probably are), you can download Tabminder as an unpackaged extension by forking or cloning the <a href="https://github.com/ecmendenhall/Tabminder">project repository</a> or clicking the icons on the left.</p>
-
-<h1>How to use Tabminder</h1>
-
-<p>Tabminder is my first Chrome extension, so there will be bugs. If you're lucky enough to find one, please 
-<a href="https://github.com/ecmendenhall/Tabminder/issues">report it</a> and I'll try to fix it. </p>
-
-<p>Once you've added it to Chrome, you'll see a stopwatch icon in the toolbar:</p>
-
-<p><img src="http://i.imgur.com/gghfW.png" alt="Toolbar icon"></p>
-
-<p>Visit your <a>extension settings</a> and open the options page:</p>
-
-<p><img src="http://i.imgur.com/3uImm.png" alt="Options"></p>
-
-<p>or click on the toolbar icon and select 'Settings':</p>
-
-<p><img src="http://i.imgur.com/KmWCy.png" alt="Toolbar settings"></p>
-
-<p>Add a few distracting sites to the list of timesinks and a time limit in minutes for each.  </p>
-
-<p><img src="http://i.imgur.com/1Cap1.png" alt="Timesink sites"></p>
-
-<p>Make sure you enter each site's hostname as it appears in the address bar.<br><strong>Note:</strong> you might need to double-check your URLs. You don't need to enter 'http://' before the hostname, but you do need to include 'www' if it appears in the Chrome address bar (e.g. entering '<a href="http://www.reddit.com">reddit.com</a>' won't work, while entering '<a href="http://www.reddit.com">www.reddit.com</a>' will). If the timer doesn't start when you expect it to, double-check your hostnames. I'm working on better filtering in future updates.</p>
-
-<p><img src="http://i.imgur.com/TtzuE.png" alt="Timesink sites list"></p>
-
-<p>When you visit a distracting site, the icon will turn red:</p>
-
-<p><img src="http://i.imgur.com/TWWBi.png" alt="Red toolbar icon"></p>
-
-<p>If you check "Show remaining time in toolbar" in the options page, the icon will also display the number of minutes remaining:</p>
-
-<p><img src="http://i.imgur.com/zaxGc.png" alt="Time in toolbar"></p>
-
-<p>While you're browsing, you can add a site to the list of timesinks by clicking the toolbar icon and selecting "Add page to timesinks." Or, if you've found yourself on a distracting site, but don't want to add it permanently, you can start a temporary timer by selecting "Start timer."</p>
-
-<p><img src="http://i.imgur.com/KqCjn.png" alt="Start timer"></p>
-
-<p>Both these options use the default time limit from the settings page:</p>
-
-<p><img src="http://i.imgur.com/AaKXp.png" alt="Default time"></p>
-
-<p>If you've been browsing a distracting site for too long, Tabminder will redirect you to a reminder page:</p>
-
-<p><img src="http://i.imgur.com/BT4D5.png" alt="Reminder page"></p>
-
-<p>If you realize you're wasting time, click "close tab" and get back to work. If you're reading something really interesting, click "restart timer" and the countdown will start over again.</p>
-
-<h1>License</h1>
-
-<p>This code is released under an MIT license. For more details, see the included file 'LICENSE.md'.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/ecmendenhall">ecmendenhall</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-31102646-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-  </body>
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/Product">
+    <head>
+        <title>Tabminder: Stop distracted browsing before it starts.</title>
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/widgets.css">
+        <link rel="stylesheet" href="/css/index.css">
+        <link rel="shortcut icon" href="/img/favicon.ico">
+        <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/haffdbbhnmojclpkpmjhpdflflienkmk">
+        <meta itemprop="name" content="Tabminder: Stop distracted browsing before it starts.">
+        <meta itemprop="description" content="There's nothing wrong with taking a quick break, but it's easy to waste a ton of time as soon as you open a new tab. Tabminder helps make you more mindful of browsing distracting sites by providing a gentle reminder every few minutes, preventing quick visits to Reddit, Twitter, and Hacker News from turning into work-sucking time vortexes.">
+        <meta itemprop="image" content="http://ecmendenhall.github.com/Tabminder/img/screen10.png">
+        <meta property="og:title" content="Tabminder: Stop distracted browsing before it starts." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://ecmendenhall.github.com/Tabminder" />
+        <meta property="og:image" content="http://ecmendenhall.github.com/Tabminder/img/screen10.png" />
+        <meta property="og:site_name" content="Tabminder" />
+        <meta property="fb:admins" content="10134383" />
+        <meta property="og:description"
+          content="Tabminder helps make you more mindful of browsing distracting sites by providing a gentle reminder every few minutes, preventing quick visits to Reddit, Twitter, and Hacker News from turning into work-sucking time vortexes."/>
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="nav-collapse collapse pull-right">
+                    <ul class="nav">
+                        <li><a href="#install">Install</a></li>
+                        <li><a href="#about">About</a></li>  
+                        <li><a href="#source">Source</a></li>
+                        <li><a href="#donate">Donate</a></li>
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div>
+                    <div id="main-logo">
+                        <h1>Tabminder</h1>
+                    </div>
+                    <p class="tagline">Stop distracted browsing before it starts.</p>
+                    </div>
+                </div>
+                <section id="install">
+                <div class="span7">
+                    <div class="hero">
+                        <p>
+                        Don't let one distracting tab turn into hours of wasted time.</p>
+                        <p>
+                        Stay mindful of your browsing with Tabminder.
+                        </p>
+                        New in version 1.0:
+                        <ul>
+                            <li>Native Chrome user interface</li>
+                            <li>Built in help page</li>
+                            <li>Faster, lighter background script</li>
+                            <li>Test coverage for better reliability</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span5">
+                    <div class="well">
+                    <div id="install-box">
+                            <img src="/img/chromelogo.png">
+                            <span>Install Tabminder for Chrome</span>
+                    </div>
+                    <div>
+                        <h4>Support Tabminder</h4>
+                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+                            <input type="hidden" name="cmd" value="_donations">
+                            <input type="hidden" name="business" value="KSSTVBHUBV2L4">
+                            <input type="hidden" name="lc" value="US">
+                            <input type="hidden" name="item_name" value="Tabminder Chrome Extension">
+                            <input type="hidden" name="currency_code" value="USD">
+                            <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted">
+                            <div class="input-prepend">
+                                <span class="add-on">$</span>
+                                <input class="span1" id="prependedInput" type="number" name="amount" min="1.00" value="2.50" step="0.50"> 
+                            </div>
+                            <input class="btn" type="submit" value="Donate">
+                        </form>
+                        <p id="poweredby">Donations securely processed by PayPal</p>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <ul class="like-buttons unstyled">
+                        <li><div class="g-plusone" data-size="medium" data-annotation="none" data-width="300"></div></li>
+                        <li><div class="fb-like" data-href="http://ecmendenhall.github.com/Tabminder" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="lucida grande"></div></li>
+                        <li><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://ecmendenhall.github.com/Tabminder/" data-text="Tabminder: Stop distracted browsing before it starts.">Tweet</a></li>
+                </ul>
+                </div>
+                </div>
+                </section>
+            </div>
+            <div class="row">
+                <section id="about">
+                <div class="span7">
+                    <h3>How it works</h3>
+                    <p> There's nothing wrong with taking a quick break, but it's easy to waste a ton of time as soon as you open a new tab. Tabminder helps make you more mindful of browsing distracting sites by providing a gentle reminder every few minutes, preventing quick visits to Reddit, Twitter, and Hacker News from turning into work-sucking time vortexes. When you open a distracting tab, Tabminder starts counting down
+                        from your preset time limit.
+                    </p>
+                    <p><img src="/img/screen5.png"></p>
+                    <p>When time's up, it will prompt you to close the tab or restart the timer. This is just 
+                       annoying enough to intercept distracted browsing before it goes too far, but not so strict that it prevents you from taking 
+                       a break once in a while. (You deserve it, right?)
+                    </p>
+                    <p>
+                    <img src="/img/screen10.png">
+                    </p>
+                </div>
+                </section>
+            </div>
+            <div class="row">
+                <section id="source">
+                <div class="span7">
+                    <h3>Source</h3>
+                    <p>Tabminder is free software. Its source code is available <a href="https://github.com/ecmendenhall/Tabminder">on GitHub</a>
+                    under an MIT license.</p>
+                </div>
+                </section>
+            </div>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+        <script src="index.js"></script>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        <script type="text/javascript">
+            (function() {
+                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                po.src = 'https://apis.google.com/js/plusone.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            })();
+        </script>
+        <div id="fb-root"></div>
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+    </body>
 </html>
+
+
+

@@ -1,0 +1,80 @@
+        body {
+            font-family: 'Lucida Grande', sans-serif;
+            font-size: 75%;
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            padding-bottom: 60px;
+        }
+        h1, h2, h3, h4 { font-weight: 200; }
+        p > img {
+            border: 1px solid #eee;
+            -webkit-box-shadow: 3px 3px 6px #666;
+        }
+        .hero {
+            font-style: bold;
+            font-size: 150%;
+            line-height: 200%;
+        }
+        .hero > ul {
+            font-size: 80%;
+        }
+        .input-prepend {
+            display: inline;
+            padding-right: 10px;
+        }
+        .tagline {
+            color: #999;
+        }
+        .likebuttons {
+            margin-top: -10px;
+        }
+        #install-box {
+            background-color: #eee;
+            background-image: -webkit-linear-gradient(bottom, #eee, #ddd);
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 150%;
+            -webkit-box-shadow: 0 4px 3px -3px #666;
+	        -moz-box-shadow: 0 4px 3px -3px #666;
+	        box-shadow: 0 4px 3px -3px #666;
+        }
+        #install-box:hover {
+            background-image: -webkit-linear-gradient(top, #eee, #ddd);
+            cursor: pointer;
+        }
+        #main-logo {
+            background: url(/img/tabminder128.png) no-repeat;
+            height: 80px;
+            display: block;
+            border-bottom: 1px solid #EEE;
+        }
+        #main-logo h1 {
+            margin-left: 80px;
+            vertical-align: middle;
+            height: 80px;
+            padding-top: 20px;
+            font-size: 400%;
+        }
+        #dollars {
+            font-size: 150%;
+        }
+        .like-buttons {
+            list-style: none;
+            margin: 5px 0 20px 0;
+            padding: 0;
+            width: 100%;
+        }
+        ul.like-buttons li {
+            display: block;
+            float: left;
+            margin-right: 10px;
+        }
+        #poweredby {
+            font-size: 50%;
+            opacity: .8;
+            margin: 0px;
+            margin-top: -15px;
+        }
+        footer {
+            font-sixe: 75%;
+            opacity: .8;
+        }
