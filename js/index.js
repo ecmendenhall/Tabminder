@@ -5,6 +5,7 @@ $(document).ready(function(){
     }); 
     $("#donate-button").click(function(){
         var amount = $("#prependedInput").value;
+        amount = parseInt(amount * 100);
         _gaq.push(['_trackEvent', 'Donate', 'Donation', 'Donation', amount]);
     });
 });
